@@ -9,6 +9,8 @@ import Services from "./pages/Services";
 import MobileSpa from "./pages/MobileSpa";
 import Membership from "./pages/Membership";
 import Booking from "./pages/Booking";
+import AdminLogin from "./pages/AdminLogin";
+import AdminDashboard from "./pages/AdminDashboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,6 +28,8 @@ const App = () => (
           <Route path="/mobile-spa" element={<MobileSpa />} />
           <Route path="/membership" element={<Membership />} />
           <Route path="/booking" element={<Booking />} />
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin" element={<AdminDashboard />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
