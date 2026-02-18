@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import oyinLogo from "@/assets/oyin-logo.jpg";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -20,8 +21,8 @@ const Navbar = () => {
       <nav className="container mx-auto px-6 lg:px-12">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <Link to="/" className="font-serif text-2xl tracking-wide text-foreground">
-            OYIN
+          <Link to="/" className="flex items-center gap-2">
+            <img src={oyinLogo} alt="Oyin Massage & Spa" className="h-12 w-auto rounded" />
           </Link>
 
           {/* Desktop Navigation */}
