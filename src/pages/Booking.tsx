@@ -1,13 +1,15 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, ArrowLeft, Check, MapPin, Clock, Calendar } from "lucide-react";
 import Layout from "@/components/Layout";
 import { fadeUp } from "@/lib/animations";
+import { supabase } from "@/integrations/supabase/client";
 import therapistAmara from "@/assets/therapist-amara.jpg";
 import therapistChidera from "@/assets/therapist-chidera.jpg";
 import therapistFolake from "@/assets/therapist-folake.jpg";
 import therapistBisi from "@/assets/therapist-bisi.jpg";
 import therapistNneka from "@/assets/therapist-nneka.jpg";
+
 const serviceOptions = [
   { id: "deep-tissue", name: "Deep Tissue Restoration", durations: [60, 90, 120] },
   { id: "swedish", name: "Swedish Relaxation", durations: [60, 90] },
@@ -26,12 +28,13 @@ const locationOptions = [
 
 const timeSlots = ["09:00", "10:30", "12:00", "13:30", "15:00", "16:30", "18:00", "19:30"];
 
-const therapists = [
-  { id: 1, name: "Amara", specialties: ["Deep Tissue", "Sports Recovery"], available: true, photo: therapistAmara },
-  { id: 2, name: "Chidera", specialties: ["Relaxation", "Aromatherapy"], available: true, photo: therapistChidera },
-  { id: 3, name: "Folake", specialties: ["Prenatal", "Relaxation"], available: true, photo: therapistFolake },
-  { id: 4, name: "Bisi", specialties: ["Deep Tissue", "Hot Stone"], available: false, photo: therapistBisi },
-  { id: 5, name: "Nneka", specialties: ["Couples", "Executive"], available: true, photo: therapistNneka },
+// Fallback static therapists (used when DB is empty)
+const fallbackTherapists = [
+  { id: "1", name: "Amara", specialties: ["Deep Tissue", "Sports Recovery"], available: true, photo_url: null, photo: therapistAmara },
+  { id: "2", name: "Chidera", specialties: ["Relaxation", "Aromatherapy"], available: true, photo_url: null, photo: therapistChidera },
+  { id: "3", name: "Folake", specialties: ["Prenatal", "Relaxation"], available: true, photo_url: null, photo: therapistFolake },
+  { id: "4", name: "Bisi", specialties: ["Deep Tissue", "Hot Stone"], available: false, photo_url: null, photo: therapistBisi },
+  { id: "5", name: "Nneka", specialties: ["Couples", "Executive"], available: true, photo_url: null, photo: therapistNneka },
 ];
 
 const pricingMap: Record<number, string> = {
@@ -48,7 +51,18 @@ const Booking = () => {
   const [selectedLocation, setSelectedLocation] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
-  const [selectedTherapist, setSelectedTherapist] = useState<number | null>(null);
+  const [selectedTherapist, setSelectedTherapist] = useState<string | null>(null);
+  const [therapists, setTherapists] = useState(fallbackTherapists);
+
+  useEffect(() => {
+    const fetchTherapists = async () => {
+      const { data } = await supabase.from("therapists").select("*").order("created_at");
+      if (data && data.length > 0) {
+        setTherapists(data.map((t) => ({ ...t, photo: t.photo_url || "" })));
+      }
+    };
+    fetchTherapists();
+  }, []);
 
   const currentService = serviceOptions.find((s) => s.id === selectedService);
   const availableTherapists = therapists.filter((t) => t.available);
@@ -263,12 +277,18 @@ const Booking = () => {
                           : "border-border hover:border-accent"
                       }`}
                     >
-                      <div className="aspect-[4/3] overflow-hidden">
-                        <img
-                          src={therapist.photo}
-                          alt={therapist.name}
-                          className="w-full h-full object-cover object-top"
-                        />
+                      <div className="aspect-[4/3] overflow-hidden bg-muted">
+                        {(therapist.photo_url || therapist.photo) ? (
+                          <img
+                            src={therapist.photo_url || therapist.photo}
+                            alt={therapist.name}
+                            className="w-full h-full object-cover object-top"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-muted-foreground font-serif text-2xl">
+                            {therapist.name[0]}
+                          </div>
+                        )}
                       </div>
                       <div className="p-5">
                         <h3 className="font-serif text-lg text-foreground">{therapist.name}</h3>
