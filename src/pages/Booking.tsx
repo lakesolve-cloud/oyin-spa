@@ -1,9 +1,13 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, ArrowLeft, Check, MapPin, Clock, User, Calendar } from "lucide-react";
+import { ArrowRight, ArrowLeft, Check, MapPin, Clock, Calendar } from "lucide-react";
 import Layout from "@/components/Layout";
 import { fadeUp } from "@/lib/animations";
-
+import therapistAmara from "@/assets/therapist-amara.jpg";
+import therapistChidera from "@/assets/therapist-chidera.jpg";
+import therapistFolake from "@/assets/therapist-folake.jpg";
+import therapistBisi from "@/assets/therapist-bisi.jpg";
+import therapistNneka from "@/assets/therapist-nneka.jpg";
 const serviceOptions = [
   { id: "deep-tissue", name: "Deep Tissue Restoration", durations: [60, 90, 120] },
   { id: "swedish", name: "Swedish Relaxation", durations: [60, 90] },
@@ -23,11 +27,11 @@ const locationOptions = [
 const timeSlots = ["09:00", "10:30", "12:00", "13:30", "15:00", "16:30", "18:00", "19:30"];
 
 const therapists = [
-  { id: 1, name: "Amara", specialties: ["Deep Tissue", "Sports Recovery"], available: true },
-  { id: 2, name: "Chidera", specialties: ["Relaxation", "Aromatherapy"], available: true },
-  { id: 3, name: "Folake", specialties: ["Prenatal", "Relaxation"], available: true },
-  { id: 4, name: "Bisi", specialties: ["Deep Tissue", "Hot Stone"], available: false },
-  { id: 5, name: "Nneka", specialties: ["Couples", "Executive"], available: true },
+  { id: 1, name: "Amara", specialties: ["Deep Tissue", "Sports Recovery"], available: true, photo: therapistAmara },
+  { id: 2, name: "Chidera", specialties: ["Relaxation", "Aromatherapy"], available: true, photo: therapistChidera },
+  { id: 3, name: "Folake", specialties: ["Prenatal", "Relaxation"], available: true, photo: therapistFolake },
+  { id: 4, name: "Bisi", specialties: ["Deep Tissue", "Hot Stone"], available: false, photo: therapistBisi },
+  { id: 5, name: "Nneka", specialties: ["Couples", "Executive"], available: true, photo: therapistNneka },
 ];
 
 const pricingMap: Record<number, string> = {
@@ -248,30 +252,32 @@ const Booking = () => {
                   Available therapists qualified for your selected service and time.
                 </p>
 
-                <div className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   {availableTherapists.map((therapist) => (
                     <button
                       key={therapist.id}
                       onClick={() => setSelectedTherapist(therapist.id)}
-                      className={`w-full text-left p-6 border transition-all ${
+                      className={`text-left border transition-all overflow-hidden ${
                         selectedTherapist === therapist.id
-                          ? "border-primary bg-secondary"
+                          ? "border-primary ring-1 ring-primary"
                           : "border-border hover:border-accent"
                       }`}
                     >
-                      <div className="flex items-center gap-5">
-                        <div className="w-14 h-14 rounded-full bg-muted flex items-center justify-center">
-                          <User className="w-6 h-6 text-muted-foreground" />
-                        </div>
-                        <div>
-                          <h3 className="font-serif text-lg text-foreground">{therapist.name}</h3>
-                          <div className="flex flex-wrap gap-2 mt-1">
-                            {therapist.specialties.map((s) => (
-                              <span key={s} className="text-[10px] tracking-[0.1em] uppercase px-2 py-1 bg-muted text-muted-foreground">
-                                {s}
-                              </span>
-                            ))}
-                          </div>
+                      <div className="aspect-[4/3] overflow-hidden">
+                        <img
+                          src={therapist.photo}
+                          alt={therapist.name}
+                          className="w-full h-full object-cover object-top"
+                        />
+                      </div>
+                      <div className="p-5">
+                        <h3 className="font-serif text-lg text-foreground">{therapist.name}</h3>
+                        <div className="flex flex-wrap gap-2 mt-2">
+                          {therapist.specialties.map((s) => (
+                            <span key={s} className="text-[10px] tracking-[0.1em] uppercase px-2 py-1 bg-muted text-muted-foreground">
+                              {s}
+                            </span>
+                          ))}
                         </div>
                       </div>
                     </button>
