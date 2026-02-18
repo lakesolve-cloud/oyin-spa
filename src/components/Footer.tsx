@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import oyinLogo from "@/assets/oyin-logo.jpg";
 
 const Footer = () => {
   return (
@@ -8,7 +9,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
           {/* Brand */}
           <div className="lg:col-span-1">
-            <h3 className="font-serif text-2xl tracking-wide text-warm-cream mb-4">OYIN</h3>
+            <img src={oyinLogo} alt="Oyin Massage & Spa" className="h-14 w-auto rounded mb-4" />
             <p className="text-sm leading-relaxed opacity-80">
               Private luxury wellness, delivered with discretion and care. Lagos' premier appointment-only massage and spa experience.
             </p>
