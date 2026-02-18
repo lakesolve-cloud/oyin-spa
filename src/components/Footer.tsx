@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import oyinLogo from "@/assets/oyin-logo.jpg";
+import oyinLogo from "@/assets/oyin-logo.png";
 
 const Footer = () => {
   return (
