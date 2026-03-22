@@ -1,25 +1,68 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, ArrowLeft, Check, MapPin, Clock, Calendar } from "lucide-react";
+import { ArrowRight, ArrowLeft, Check, MapPin, Clock, Calendar, ChevronDown } from "lucide-react";
 import Layout from "@/components/Layout";
 import { fadeUp } from "@/lib/animations";
 import { supabase } from "@/integrations/supabase/client";
+import { spaServices, massageServices, quickMassages, massageAddOns } from "@/data/services";
 import therapistAmara from "@/assets/therapist-amara.jpg";
 import therapistChidera from "@/assets/therapist-chidera.jpg";
 import therapistFolake from "@/assets/therapist-folake.jpg";
 import therapistBisi from "@/assets/therapist-bisi.jpg";
 import therapistNneka from "@/assets/therapist-nneka.jpg";
 
-const serviceOptions = [
-  { id: "deep-tissue", name: "Deep Tissue Restoration", durations: [60, 90, 120] },
-  { id: "swedish", name: "Swedish Relaxation", durations: [60, 90] },
-  { id: "aromatherapy", name: "Aromatherapy Journey", durations: [75, 90] },
-  { id: "hot-stone", name: "Hot Stone Ritual", durations: [90] },
-  { id: "couples", name: "The Couples Retreat", durations: [90, 120] },
-  { id: "prenatal", name: "Prenatal Wellness", durations: [60, 75] },
-  { id: "post-op", name: "Post-Op Recovery", durations: [60, 90] },
-  { id: "executive", name: "Executive Reset", durations: [90, 120] },
-];
+// Build a flat bookable list from the services data
+interface BookableService {
+  id: string;
+  category: string;
+  name: string;
+  price: string;
+  duration?: string;
+}
+
+const bookableServices: BookableService[] = (() => {
+  const list: BookableService[] = [];
+
+  // Spa services (flat price, no duration)
+  spaServices.forEach((cat) => {
+    cat.items?.forEach((item) => {
+      list.push({
+        id: `${cat.category}--${item.name}`.toLowerCase().replace(/\s+/g, "-"),
+        category: cat.category,
+        name: item.name,
+        price: item.price,
+      });
+    });
+  });
+
+  // Massage services (duration-based)
+  massageServices.forEach((service) => {
+    service.items.forEach((item) => {
+      list.push({
+        id: `massage--${service.name}--${item.duration}`.toLowerCase().replace(/\s+/g, "-"),
+        category: "Massage",
+        name: `${service.name} — ${item.duration}`,
+        price: item.price,
+        duration: item.duration,
+      });
+    });
+  });
+
+  // Quick massages
+  quickMassages.forEach((item) => {
+    list.push({
+      id: `quick--${item.name}`.toLowerCase().replace(/\s+/g, "-"),
+      category: "Massage",
+      name: item.name,
+      price: item.price,
+    });
+  });
+
+  return list;
+})();
+
+// Get unique categories preserving order
+const categories = [...new Set(bookableServices.map((s) => s.category))];
 
 const locationOptions = [
   { id: "in-spa", label: "In-Spa", desc: "Visit our private studio" },
@@ -28,7 +71,6 @@ const locationOptions = [
 
 const timeSlots = ["09:00", "10:30", "12:00", "13:30", "15:00", "16:30", "18:00", "19:30"];
 
-// Fallback static therapists (used when DB is empty)
 const fallbackTherapists = [
   { id: "1", name: "Amara", specialties: ["Deep Tissue", "Sports Recovery"], available: true, photo_url: null, photo: therapistAmara },
   { id: "2", name: "Chidera", specialties: ["Relaxation", "Aromatherapy"], available: true, photo_url: null, photo: therapistChidera },
@@ -37,22 +79,16 @@ const fallbackTherapists = [
   { id: "5", name: "Nneka", specialties: ["Couples", "Executive"], available: true, photo_url: null, photo: therapistNneka },
 ];
 
-const pricingMap: Record<number, string> = {
-  60: "₦45,000",
-  75: "₦52,000",
-  90: "₦65,000",
-  120: "₦85,000",
-};
-
 const Booking = () => {
   const [step, setStep] = useState(1);
-  const [selectedService, setSelectedService] = useState("");
-  const [selectedDuration, setSelectedDuration] = useState<number | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedServiceId, setSelectedServiceId] = useState("");
   const [selectedLocation, setSelectedLocation] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
   const [selectedTherapist, setSelectedTherapist] = useState<string | null>(null);
   const [therapists, setTherapists] = useState(fallbackTherapists);
+  const [addHotStone, setAddHotStone] = useState(false);
 
   useEffect(() => {
     const fetchTherapists = async () => {
@@ -64,20 +100,25 @@ const Booking = () => {
     fetchTherapists();
   }, []);
 
-  const currentService = serviceOptions.find((s) => s.id === selectedService);
+  const filteredServices = useMemo(
+    () => bookableServices.filter((s) => s.category === selectedCategory),
+    [selectedCategory]
+  );
+
+  const currentService = bookableServices.find((s) => s.id === selectedServiceId);
   const availableTherapists = therapists.filter((t) => t.available);
   const selectedTherapistData = therapists.find((t) => t.id === selectedTherapist);
+  const isMassageCategory = selectedCategory === "Massage";
 
   const canProceed = () => {
     switch (step) {
-      case 1: return selectedService && selectedDuration && selectedLocation;
+      case 1: return selectedServiceId && selectedLocation;
       case 2: return selectedDate && selectedTime;
       case 3: return selectedTherapist !== null;
       default: return false;
     }
   };
 
-  // Generate next 14 days
   const dates = Array.from({ length: 14 }, (_, i) => {
     const d = new Date();
     d.setDate(d.getDate() + i + 1);
@@ -104,9 +145,7 @@ const Booking = () => {
               <div key={s} className="flex items-center gap-3">
                 <div
                   className={`w-8 h-8 rounded-full flex items-center justify-center text-xs transition-colors ${
-                    step >= s
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-muted text-muted-foreground"
+                    step >= s ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
                   }`}
                 >
                   {step > s ? <Check size={14} /> : s}
@@ -126,45 +165,71 @@ const Booking = () => {
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.4 }}
               >
-                <h2 className="font-serif text-xl mb-8 text-foreground">Select Your Service</h2>
-                <div className="space-y-3 mb-10">
-                  {serviceOptions.map((service) => (
+                {/* Category Selection */}
+                <h2 className="font-serif text-xl mb-6 text-foreground">Select Category</h2>
+                <div className="flex flex-wrap gap-2 mb-10">
+                  {categories.map((cat) => (
                     <button
-                      key={service.id}
-                      onClick={() => { setSelectedService(service.id); setSelectedDuration(null); }}
-                      className={`w-full text-left p-5 border transition-colors ${
-                        selectedService === service.id
-                          ? "border-primary bg-secondary"
-                          : "border-border hover:border-accent"
+                      key={cat}
+                      onClick={() => {
+                        setSelectedCategory(cat);
+                        setSelectedServiceId("");
+                        setAddHotStone(false);
+                      }}
+                      className={`px-4 py-2 text-xs tracking-[0.1em] uppercase border transition-colors ${
+                        selectedCategory === cat
+                          ? "border-primary bg-secondary text-foreground"
+                          : "border-border text-muted-foreground hover:border-accent"
                       }`}
                     >
-                      <span className="text-sm text-foreground">{service.name}</span>
+                      {cat}
                     </button>
                   ))}
                 </div>
 
-                {currentService && (
+                {/* Service Selection */}
+                {selectedCategory && (
                   <>
-                    <h3 className="font-serif text-lg mb-4 text-foreground">Duration</h3>
-                    <div className="flex flex-wrap gap-3 mb-10">
-                      {currentService.durations.map((d) => (
+                    <h3 className="font-serif text-lg mb-4 text-foreground">Select Service</h3>
+                    <div className="space-y-2 mb-10 max-h-[320px] overflow-y-auto pr-1">
+                      {filteredServices.map((service) => (
                         <button
-                          key={d}
-                          onClick={() => setSelectedDuration(d)}
-                          className={`px-6 py-3 text-sm border transition-colors ${
-                            selectedDuration === d
-                              ? "border-primary bg-secondary text-foreground"
-                              : "border-border text-muted-foreground hover:border-accent"
+                          key={service.id}
+                          onClick={() => setSelectedServiceId(service.id)}
+                          className={`w-full text-left px-5 py-4 border transition-colors flex justify-between items-center gap-4 ${
+                            selectedServiceId === service.id
+                              ? "border-primary bg-secondary"
+                              : "border-border hover:border-accent"
                           }`}
                         >
-                          {d} min — {pricingMap[d]}
+                          <span className="text-sm text-foreground">{service.name}</span>
+                          <span className="text-sm font-medium text-foreground whitespace-nowrap">{service.price}</span>
                         </button>
                       ))}
                     </div>
                   </>
                 )}
 
-                {selectedDuration && (
+                {/* Hot Stone Add-on for massage */}
+                {selectedServiceId && isMassageCategory && (
+                  <div className="mb-10">
+                    <h3 className="font-serif text-lg mb-4 text-foreground">Add-Ons</h3>
+                    <button
+                      onClick={() => setAddHotStone(!addHotStone)}
+                      className={`w-full text-left px-5 py-4 border transition-colors flex justify-between items-center gap-4 ${
+                        addHotStone
+                          ? "border-primary bg-secondary"
+                          : "border-border hover:border-accent"
+                      }`}
+                    >
+                      <span className="text-sm text-foreground">Hot Stone Add-On</span>
+                      <span className="text-sm font-medium text-foreground">₦10,000</span>
+                    </button>
+                  </div>
+                )}
+
+                {/* Location */}
+                {selectedServiceId && (
                   <>
                     <h3 className="font-serif text-lg mb-4 text-foreground">Location</h3>
                     <div className="grid grid-cols-2 gap-4 mb-10">
@@ -319,12 +384,12 @@ const Booking = () => {
 
                 <div className="border border-border divide-y divide-border mb-10">
                   <div className="p-6 flex justify-between">
-                    <span className="text-sm text-muted-foreground">Service</span>
-                    <span className="text-sm text-foreground">{currentService?.name}</span>
+                    <span className="text-sm text-muted-foreground">Category</span>
+                    <span className="text-sm text-foreground">{selectedCategory}</span>
                   </div>
                   <div className="p-6 flex justify-between">
-                    <span className="text-sm text-muted-foreground">Duration</span>
-                    <span className="text-sm text-foreground">{selectedDuration} minutes</span>
+                    <span className="text-sm text-muted-foreground">Service</span>
+                    <span className="text-sm text-foreground">{currentService?.name}</span>
                   </div>
                   <div className="p-6 flex justify-between">
                     <span className="text-sm text-muted-foreground">Location</span>
@@ -340,9 +405,17 @@ const Booking = () => {
                     <span className="text-sm text-muted-foreground">Therapist</span>
                     <span className="text-sm text-foreground">{selectedTherapistData?.name}</span>
                   </div>
+                  {addHotStone && (
+                    <div className="p-6 flex justify-between">
+                      <span className="text-sm text-muted-foreground">Add-On: Hot Stone</span>
+                      <span className="text-sm font-medium text-foreground">₦10,000</span>
+                    </div>
+                  )}
                   <div className="p-6 flex justify-between">
                     <span className="text-sm text-muted-foreground">Price</span>
-                    <span className="text-sm font-medium text-foreground">{selectedDuration ? pricingMap[selectedDuration] : ""}</span>
+                    <span className="text-sm font-medium text-foreground">
+                      {currentService?.price}{addHotStone ? " + ₦10,000" : ""}
+                    </span>
                   </div>
                   <div className="p-6 flex justify-between bg-secondary">
                     <span className="text-sm text-foreground font-medium">Deposit Required</span>
@@ -364,9 +437,8 @@ const Booking = () => {
                 <button
                   className="w-full py-4 text-xs tracking-[0.2em] uppercase bg-primary text-primary-foreground hover:bg-warm-taupe transition-colors duration-300"
                   onClick={() => {
-                    window.open("https://wa.me/2348000000000?text=" + encodeURIComponent(
-                      `Hello, I'd like to confirm my booking:\n\nService: ${currentService?.name}\nDuration: ${selectedDuration} min\nLocation: ${locationOptions.find(l => l.id === selectedLocation)?.label}\nDate: ${selectedDate}\nTime: ${selectedTime}\nTherapist: ${selectedTherapistData?.name}\n\nI'm ready to pay the deposit.`
-                    ), "_blank");
+                    const msg = `Hello, I'd like to confirm my booking:\n\nCategory: ${selectedCategory}\nService: ${currentService?.name}\nPrice: ${currentService?.price}${addHotStone ? " + ₦10,000 (Hot Stone)" : ""}\nLocation: ${locationOptions.find(l => l.id === selectedLocation)?.label}\nDate: ${selectedDate}\nTime: ${selectedTime}\nTherapist: ${selectedTherapistData?.name}\n\nI'm ready to pay the deposit.`;
+                    window.open("https://wa.me/2348000000000?text=" + encodeURIComponent(msg), "_blank");
                   }}
                 >
                   Confirm & Pay Deposit via WhatsApp
