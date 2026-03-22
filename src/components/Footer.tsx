@@ -46,7 +46,7 @@ const Footer = () => {
               <span className="text-sm opacity-70">Lagos, Nigeria</span>
               <span className="text-sm opacity-70">By Appointment Only</span>
               <a href="mailto:hello@oyinspa.com" className="text-sm opacity-70 hover:opacity-100 transition-opacity">hello@oyinspa.com</a>
-              <a href="https://wa.me/2348000000000" className="text-sm opacity-70 hover:opacity-100 transition-opacity">WhatsApp Us</a>
+              <a href="https://wa.me/2348119636766" className="text-sm opacity-70 hover:opacity-100 transition-opacity">WhatsApp Us</a>
             </div>
           </div>
         </div>
