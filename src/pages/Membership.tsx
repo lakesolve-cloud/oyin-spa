@@ -130,7 +130,7 @@ const Membership = () => {
             </motion.p>
             <motion.div custom={2} variants={fadeUp}>
               <a
-                href="https://wa.me/2348000000000"
+                href="https://wa.me/2348119636766"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-3 px-10 py-4 text-xs tracking-[0.2em] uppercase bg-primary text-primary-foreground hover:bg-warm-taupe transition-colors duration-300"
