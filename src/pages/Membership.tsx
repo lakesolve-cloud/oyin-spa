@@ -99,7 +99,7 @@ const Membership = () => {
                   ))}
                 </div>
                 <a
-                  href="https://wa.me/2348000000000"
+                  href="https://wa.me/2348119636766"
                   target="_blank"
                   rel="noopener noreferrer"
                   className={`block text-center px-6 py-3 text-xs tracking-[0.15em] uppercase transition-colors duration-300 ${
