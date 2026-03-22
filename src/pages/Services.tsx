@@ -1,30 +1,10 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { ArrowRight, Clock, MapPin } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import Layout from "@/components/Layout";
 import { fadeUp } from "@/lib/animations";
 import heroImage from "@/assets/hero-spa.jpg";
-
-const services = [
-  {
-    category: "Massage Therapy",
-    items: [
-      { name: "Deep Tissue Restoration", desc: "Targeted pressure work to release chronic tension, knots, and muscle fatigue. Ideal for executives, athletes, and those carrying physical stress.", durations: ["60 min", "90 min", "120 min"], locations: ["In-Spa", "Mobile"] },
-      { name: "Swedish Relaxation", desc: "Full-body flowing strokes designed to calm the nervous system and promote deep relaxation.", durations: ["60 min", "90 min"], locations: ["In-Spa", "Mobile"] },
-      { name: "Aromatherapy Journey", desc: "A sensory experience combining therapeutic massage with curated essential oil blends tailored to your needs.", durations: ["75 min", "90 min"], locations: ["In-Spa", "Mobile"] },
-      { name: "Hot Stone Ritual", desc: "Heated basalt stones placed on key points of the body, combined with massage techniques for deep muscle release.", durations: ["90 min"], locations: ["In-Spa"] },
-    ],
-  },
-  {
-    category: "Specialty Experiences",
-    items: [
-      { name: "The Couples Retreat", desc: "A shared experience of relaxation for two, in our private suite or your chosen setting. Perfect for anniversaries and special occasions.", durations: ["90 min", "120 min"], locations: ["In-Spa", "Mobile"] },
-      { name: "Prenatal Wellness", desc: "Gentle, nurturing massage designed specifically for expectant mothers. Safe, supported, and deeply calming.", durations: ["60 min", "75 min"], locations: ["In-Spa", "Mobile"] },
-      { name: "Post-Op Recovery", desc: "Specialized lymphatic and gentle tissue work to support healing after cosmetic or medical procedures.", durations: ["60 min", "90 min"], locations: ["Mobile"] },
-      { name: "Executive Reset", desc: "A combination of deep tissue and relaxation techniques designed for high-performing professionals who need to decompress.", durations: ["90 min", "120 min"], locations: ["In-Spa", "Mobile"] },
-    ],
-  },
-];
+import { spaServices, massageServices, quickMassages, massageAddOns } from "@/data/services";
 
 const Services = () => {
   return (
@@ -45,63 +25,142 @@ const Services = () => {
             transition={{ delay: 0.4 }}
             className="font-serif text-4xl md:text-6xl text-warm-cream max-w-2xl mx-auto"
           >
-            Curated Experiences for <span className="italic">Mind & Body</span>
+            Services & <span className="italic">Price List</span>
           </motion.h1>
         </div>
       </section>
 
-      {/* Services List */}
-      {services.map((category, ci) => (
-        <section key={category.category} className={`py-24 lg:py-32 ${ci % 2 === 1 ? "bg-secondary" : ""}`}>
-          <div className="container mx-auto px-6 lg:px-12">
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="font-serif text-3xl md:text-4xl text-foreground mb-16"
-            >
-              {category.category}
-            </motion.h2>
-            <div className="space-y-px bg-border">
-              {category.items.map((service, i) => (
-                <motion.div
-                  key={service.name}
-                  custom={i}
-                  initial="hidden"
-                  whileInView="visible"
-                  viewport={{ once: true }}
-                  variants={fadeUp}
-                  className="bg-background p-8 lg:p-10 grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-6 items-start"
-                >
-                  <div>
-                    <h3 className="font-serif text-xl mb-3 text-foreground">{service.name}</h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed mb-4 max-w-2xl">{service.desc}</p>
-                    <div className="flex flex-wrap gap-4">
-                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                        <Clock size={12} />
-                        {service.durations.join(" · ")}
-                      </div>
-                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                        <MapPin size={12} />
-                        {service.locations.join(" · ")}
-                      </div>
+      {/* Spa Services */}
+      <section className="py-24 lg:py-32">
+        <div className="container mx-auto px-6 lg:px-12">
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="font-serif text-3xl md:text-4xl text-foreground mb-4 text-center"
+          >
+            Spa Services
+          </motion.h2>
+          <p className="text-sm text-muted-foreground text-center mb-16 max-w-xl mx-auto">
+            Comprehensive treatments for body, face, and wellness.
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+            {spaServices.map((category, ci) => (
+              <motion.div
+                key={category.category}
+                custom={ci}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                variants={fadeUp}
+                className="border border-border bg-background"
+              >
+                <div className="px-6 py-5 border-b border-border bg-secondary">
+                  <h3 className="font-serif text-lg text-foreground">{category.category}</h3>
+                </div>
+                <div className="divide-y divide-border">
+                  {category.items?.map((item) => (
+                    <div key={item.name} className="px-6 py-4 flex justify-between items-center gap-4">
+                      <span className="text-sm text-foreground">{item.name}</span>
+                      <span className="text-sm font-medium text-foreground whitespace-nowrap">{item.price}</span>
                     </div>
-                  </div>
-                  <Link
-                    to="/booking"
-                    className="self-center text-xs tracking-[0.15em] uppercase text-accent hover:text-foreground transition-colors inline-flex items-center gap-2 flex-shrink-0"
-                  >
-                    Book <ArrowRight size={12} />
-                  </Link>
-                </motion.div>
-              ))}
-            </div>
+                  ))}
+                </div>
+              </motion.div>
+            ))}
           </div>
-        </section>
-      ))}
+        </div>
+      </section>
+
+      {/* Massage Services */}
+      <section className="py-24 lg:py-32 bg-secondary">
+        <div className="container mx-auto px-6 lg:px-12">
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="font-serif text-3xl md:text-4xl text-foreground mb-4 text-center"
+          >
+            Massage
+          </motion.h2>
+          <p className="text-sm text-muted-foreground text-center mb-16 max-w-xl mx-auto">
+            From deep relaxation to targeted recovery — choose your ideal experience.
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+            {massageServices.map((service, si) => (
+              <motion.div
+                key={service.name}
+                custom={si}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                variants={fadeUp}
+                className="border border-border bg-background"
+              >
+                <div className="px-6 py-5 border-b border-border bg-background">
+                  <h3 className="font-serif text-lg text-foreground">{service.name}</h3>
+                </div>
+                <div className="divide-y divide-border">
+                  {service.items.map((item) => (
+                    <div key={item.duration} className="px-6 py-4 flex justify-between items-center gap-4">
+                      <span className="text-sm text-muted-foreground">{item.duration}</span>
+                      <span className="text-sm font-medium text-foreground">{item.price}</span>
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Quick Massages & Add-ons */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 mt-8">
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={fadeUp}
+              className="border border-border bg-background"
+            >
+              <div className="px-6 py-5 border-b border-border">
+                <h3 className="font-serif text-lg text-foreground">Quick Sessions</h3>
+              </div>
+              <div className="divide-y divide-border">
+                {quickMassages.map((item) => (
+                  <div key={item.name} className="px-6 py-4 flex justify-between items-center gap-4">
+                    <span className="text-sm text-foreground">{item.name}</span>
+                    <span className="text-sm font-medium text-foreground">{item.price}</span>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={fadeUp}
+              className="border border-border bg-background"
+            >
+              <div className="px-6 py-5 border-b border-border">
+                <h3 className="font-serif text-lg text-foreground">Add-Ons</h3>
+              </div>
+              <div className="divide-y divide-border">
+                {massageAddOns.map((item) => (
+                  <div key={item.name} className="px-6 py-4 flex justify-between items-center gap-4">
+                    <span className="text-sm text-foreground">{item.name}</span>
+                    <span className="text-sm font-medium text-foreground">{item.price}</span>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
 
       {/* Policies */}
-      <section className="py-24 lg:py-32 bg-secondary">
+      <section className="py-24 lg:py-32">
         <div className="container mx-auto px-6 lg:px-12 max-w-3xl">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
@@ -125,7 +184,7 @@ const Services = () => {
                 whileInView="visible"
                 viewport={{ once: true }}
                 variants={fadeUp}
-                className="bg-background p-8 border border-border"
+                className="bg-secondary p-8 border border-border"
               >
                 <h3 className="font-serif text-base mb-2 text-foreground">{policy.title}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">{policy.text}</p>
@@ -136,7 +195,7 @@ const Services = () => {
       </section>
 
       {/* CTA */}
-      <section className="py-24 lg:py-32 text-center">
+      <section className="py-24 lg:py-32 bg-secondary text-center">
         <div className="container mx-auto px-6">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }}>
             <motion.h2 custom={0} variants={fadeUp} className="font-serif text-3xl md:text-4xl text-foreground mb-6">
