@@ -20,9 +20,9 @@ const About = () => {
               Wellness, <span className="italic">Refined</span>
             </motion.h1>
             <motion.p custom={2} variants={fadeUp} className="text-lg text-muted-foreground leading-relaxed">
-              Oyin Massage & Spa was born from a simple conviction: that wellness should be private, 
-              intentional, and uncompromising. We exist for those who seek more than a massage — 
-              they seek an experience that honors their standards.
+              Oyin Massage & Spa was born from a simple conviction: that wellness should be intentional, 
+              personalised, and uncompromising. We exist for those who seek more than a massage — 
+              they seek an experience that honours their standards.
             </motion.p>
           </motion.div>
         </div>
@@ -56,8 +56,8 @@ const About = () => {
                 you're with us, you have our complete, undivided attention.
               </motion.p>
               <motion.p custom={3} variants={fadeUp} className="text-muted-foreground leading-relaxed">
-                Our therapists are not just skilled — they are discreet professionals who understand 
-                that entering your private space, whether our studio or your home, is a privilege 
+                Our therapists are not just skilled — they are consummate professionals who understand 
+                that entering your personal space, whether our studio or your home, is a privilege 
                 that demands the highest standard of conduct.
               </motion.p>
             </motion.div>
@@ -78,7 +78,7 @@ const About = () => {
           </motion.h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-border">
             {[
-              { title: "Discretion", desc: "Your privacy is paramount. We operate with the confidentiality and professionalism you expect." },
+              { title: "Confidentiality", desc: "Your comfort and trust are paramount. We operate with the professionalism and care you expect." },
               { title: "Excellence", desc: "Every product, technique, and interaction is held to the highest standard — no exceptions." },
               { title: "Intentionality", desc: "Nothing about Oyin is accidental. Every detail serves your comfort and peace of mind." },
               { title: "Convenience", desc: "The ultimate luxury is not having to go anywhere. We come to you, fully equipped." },

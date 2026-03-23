@@ -23,7 +23,7 @@ const MobileSpa = () => {
               The Spa Comes <span className="italic">to You</span>
             </motion.h1>
             <motion.p custom={2} variants={fadeUp} className="text-lg text-warm-stone/90 max-w-xl leading-relaxed">
-              A complete, premium spa experience — in your home, hotel suite, or private office. 
+              A complete, premium spa experience — in your home, hotel suite, or office. 
               No traffic. No waiting. Just wellness, delivered.
             </motion.p>
           </motion.div>
@@ -53,7 +53,7 @@ const MobileSpa = () => {
               { title: "Premium Linens", desc: "Fresh, crisp white linens — changed for every client, always impeccably clean." },
               { title: "Curated Oils & Products", desc: "Therapeutic-grade essential oils and premium massage products tailored to your preferences." },
               { title: "Ambient Setup", desc: "Portable speakers with calming playlists, flameless candles, and aromatherapy diffusers." },
-              { title: "Hygiene Kit", desc: "Sanitization supplies, disposable items, and a complete cleanup — we leave your space as we found it." },
+              { title: "Hygiene Kit", desc: "Sanitisation supplies, disposable items, and a complete cleanup — we leave your space as we found it." },
               { title: "Your Chosen Therapist", desc: "A vetted, experienced professional who arrives punctually and maintains the highest standards." },
             ].map((item, i) => (
               <motion.div
@@ -82,18 +82,18 @@ const MobileSpa = () => {
               Perfect For
             </motion.h2>
             <motion.p custom={1} variants={fadeUp} className="text-muted-foreground">
-              Our mobile spa service is designed for those who value their time and privacy above all.
+              Our mobile spa service is designed for those who value their time and comfort above all.
             </motion.p>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {[
               "Busy executives who can't afford travel time",
-              "VIPs and public figures seeking complete privacy",
+              "VIPs and high-profile individuals seeking exclusivity",
               "Brides and bridal parties on their special day",
-              "Travelers in Lagos hotels seeking authentic luxury",
-              "Post-operative recovery requiring at-home care",
-              "Couples wanting an intimate shared experience",
+              "Travellers in Lagos hotels seeking authentic luxury",
+              "Post-care recovery requiring at-home support",
+              "Couples wanting a shared wellness experience",
               "New mothers needing postnatal wellness support",
               "Corporate teams for executive wellness events",
             ].map((item, i) => (
@@ -130,7 +130,7 @@ const MobileSpa = () => {
               { step: "01", title: "Book Your Session", desc: "Select your service, preferred time, and location. Choose from available, qualified therapists." },
               { step: "02", title: "Confirm with Deposit", desc: "A deposit secures your booking and your therapist's time. Balance is due upon completion." },
               { step: "03", title: "We Arrive, You Relax", desc: "Your therapist arrives 15 minutes early to set up your complete spa environment." },
-              { step: "04", title: "Pure Wellness", desc: "Enjoy your treatment in absolute comfort. We clean up everything — you simply rest." },
+              { step: "04", title: "Pure Wellness", desc: "Enjoy your treatment in total comfort. We clean up everything — you simply rest." },
             ].map((item, i) => (
               <motion.div
                 key={item.step}

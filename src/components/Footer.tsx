@@ -11,7 +11,7 @@ const Footer = () => {
           <div className="lg:col-span-1">
             <img src={oyinLogo} alt="Oyin Massage & Spa" className="h-14 w-auto rounded mb-4" />
             <p className="text-sm leading-relaxed opacity-80">
-              Private luxury wellness, delivered with discretion and care. Lagos' premier appointment-only massage and spa experience.
+              Luxury wellness, delivered with professionalism and care. Lagos' premier appointment-only massage and spa experience.
             </p>
           </div>
 
@@ -35,7 +35,7 @@ const Footer = () => {
               <span className="text-sm opacity-70">Swedish Relaxation</span>
               <span className="text-sm opacity-70">Couples Retreat</span>
               <span className="text-sm opacity-70">Home & Hotel Spa</span>
-              <span className="text-sm opacity-70">Post-Op Recovery</span>
+              <span className="text-sm opacity-70">Body Sculpting</span>
             </div>
           </div>
 
