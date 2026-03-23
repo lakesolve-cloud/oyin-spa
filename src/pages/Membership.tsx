@@ -20,7 +20,7 @@ const tiers = [
   },
   {
     icon: Crown,
-    name: "The Private Collection",
+    name: "The Prestige Collection",
     subtitle: "For those who demand the exceptional",
     benefits: [
       "All Inner Circle benefits",
@@ -28,7 +28,7 @@ const tiers = [
       "Dedicated wellness concierge",
       "Complimentary monthly add-on service",
       "VIP event invitations",
-      "Custom wellness program design",
+      "Custom wellness programme design",
     ],
     cta: "Apply for VIP Access",
     featured: true,
@@ -36,11 +36,11 @@ const tiers = [
   {
     icon: Gift,
     name: "Corporate Wellness",
-    subtitle: "For forward-thinking organizations",
+    subtitle: "For forward-thinking organisations",
     benefits: [
       "On-site team wellness sessions",
-      "Customized corporate packages",
-      "Executive stress management programs",
+      "Customised corporate packages",
+      "Executive stress management programmes",
       "Event and retreat spa services",
       "Branded wellness experiences",
     ],
@@ -125,7 +125,7 @@ const Membership = () => {
             </motion.h2>
             <motion.p custom={1} variants={fadeUp} className="text-muted-foreground leading-relaxed mb-10">
               We intentionally keep our membership numbers small to ensure every member receives 
-              the personalized attention and priority access they deserve. Reach out to discuss 
+              the personalised attention and priority access they deserve. Reach out to discuss 
               which tier aligns with your wellness goals.
             </motion.p>
             <motion.div custom={2} variants={fadeUp}>

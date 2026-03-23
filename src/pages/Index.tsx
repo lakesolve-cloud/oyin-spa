@@ -18,7 +18,7 @@ const Index = () => {
             "@context": "https://schema.org",
             "@type": "DaySpa",
             name: "Oyin Massage & Spa",
-            description: "Private luxury wellness and spa services in Lagos, Nigeria",
+            description: "Exclusive luxury wellness and spa services in Lagos, Nigeria",
             address: { "@type": "PostalAddress", addressLocality: "Lagos", addressCountry: "NG" },
             priceRange: "₦₦₦₦",
           }),
@@ -42,14 +42,14 @@ const Index = () => {
               variants={fadeUp}
               className="text-xs tracking-[0.3em] uppercase text-warm-stone mb-6"
             >
-              Lagos' Discreet Premium Spa
+              Lagos' Exclusive Premium Spa
             </motion.p>
             <motion.h1
               custom={1}
               variants={fadeUp}
               className="font-serif text-4xl md:text-6xl lg:text-7xl leading-[1.1] text-warm-cream mb-8"
             >
-              Private Luxury Wellness.{" "}
+              Luxury Wellness.{" "}
               <span className="italic">Delivered to You.</span>
             </motion.h1>
             <motion.p
@@ -57,7 +57,7 @@ const Index = () => {
               variants={fadeUp}
               className="text-lg md:text-xl text-warm-stone/90 max-w-xl mb-10 leading-relaxed"
             >
-              An appointment-only, concierge-style spa experience — in our private studio or the comfort of your home.
+              An appointment-only, concierge-style spa experience — in our dedicated studio or the comfort of your home.
             </motion.p>
             <motion.div custom={3} variants={fadeUp} className="flex flex-wrap gap-4">
               <Link
@@ -106,7 +106,7 @@ const Index = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-6">
             {[
-              { icon: Shield, title: "Absolute Discretion", desc: "Your privacy is non-negotiable. Every interaction is handled with complete confidentiality." },
+              { icon: Shield, title: "Complete Confidentiality", desc: "Your comfort and trust are paramount. Every interaction is handled with the utmost professionalism and care." },
               { icon: Star, title: "Curated Excellence", desc: "Every therapist is rigorously vetted, trained, and committed to delivering an exceptional experience." },
               { icon: MapPin, title: "Your Space, Elevated", desc: "We bring the full spa experience to you — premium table, linens, oils, and ambiance." },
               { icon: Clock, title: "Effortless Booking", desc: "Select your service, time, and therapist. We handle every detail so you simply arrive — or we do." },
@@ -150,7 +150,7 @@ const Index = () => {
             {[
               { title: "Deep Restoration", desc: "Targeted deep tissue work for chronic tension, post-workout recovery, and executive stress relief.", duration: "60 — 120 min" },
               { title: "Serene Relaxation", desc: "Full-body Swedish technique designed to dissolve stress and restore calm to mind and body.", duration: "60 — 90 min" },
-              { title: "The Couples Retreat", desc: "A shared experience of relaxation for two, in our private suite or your chosen setting.", duration: "90 — 120 min" },
+              { title: "The Couples Retreat", desc: "A shared experience of relaxation for two, in our dedicated suite or your chosen setting.", duration: "90 — 120 min" },
             ].map((service, i) => (
               <motion.div
                 key={service.title}
@@ -284,7 +284,7 @@ const Index = () => {
                 our undivided attention and the highest standard of care.
               </motion.p>
               <motion.p custom={3} variants={fadeUp} className="text-muted-foreground leading-relaxed mb-10">
-                If you value discretion, professionalism, and an experience that respects your standards — 
+                If you value professionalism, excellence, and an experience that respects your standards — 
                 we were made for you.
               </motion.p>
               <motion.div custom={4} variants={fadeUp}>
@@ -313,10 +313,10 @@ const Index = () => {
               Your Wellness Awaits
             </motion.p>
             <motion.h2 custom={1} variants={fadeUp} className="font-serif text-3xl md:text-5xl lg:text-6xl text-warm-cream mb-8 max-w-3xl mx-auto leading-tight">
-              Ready to Experience <span className="italic">Quiet Luxury?</span>
+              Ready to Experience <span className="italic">Elevated Wellness?</span>
             </motion.h2>
             <motion.p custom={2} variants={fadeUp} className="text-warm-stone/80 max-w-xl mx-auto mb-12">
-              Book your private session today. Limited appointments available daily.
+              Book your session today. Limited appointments available daily.
             </motion.p>
             <motion.div custom={3} variants={fadeUp}>
               <Link

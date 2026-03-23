@@ -29,7 +29,7 @@ export const spaServices: ServiceCategory[] = [
     ],
   },
   {
-    category: "Skin Tag Removal",
+    category: "Skin Tag Care",
     items: [
       { name: "Per Area", price: "₦40,000" },
     ],
@@ -48,7 +48,7 @@ export const spaServices: ServiceCategory[] = [
     ],
   },
   {
-    category: "Stretch Marks Removal",
+    category: "Skin Smoothing",
     items: [
       { name: "Arms (Both)", price: "₦60,000" },
       { name: "Thighs (Both)", price: "₦60,000" },
@@ -68,13 +68,13 @@ export const spaServices: ServiceCategory[] = [
   {
     category: "IV Infusion",
     items: [
-      { name: "Whitening Infusion", price: "₦150,000" },
-      { name: "Lightening Infusion", price: "₦120,000" },
+      { name: "Glow Infusion", price: "₦150,000" },
+      { name: "Radiance Infusion", price: "₦120,000" },
       { name: "Detoxify", price: "₦90,000" },
-      { name: "Skin Repair Infusion", price: "₦80,000" },
-      { name: "Anti-Aging Infusion", price: "₦90,000" },
+      { name: "Skin Renewal Infusion", price: "₦80,000" },
+      { name: "Rejuvenation Infusion", price: "₦90,000" },
       { name: "Immune Booster", price: "₦80,000" },
-      { name: "Weight Loss", price: "₦150,000" },
+      { name: "Metabolism Support", price: "₦150,000" },
     ],
   },
   {
@@ -93,12 +93,12 @@ export const spaServices: ServiceCategory[] = [
   {
     category: "Facial Treatments",
     items: [
-      { name: "Acne Reduction", price: "₦60,000" },
-      { name: "Anti Aging", price: "₦80,000" },
+      { name: "Clarity Facial", price: "₦60,000" },
+      { name: "Rejuvenation Facial", price: "₦80,000" },
       { name: "Deep Cleaning", price: "₦45,000" },
-      { name: "Corrective", price: "₦60,000" },
+      { name: "Corrective Facial", price: "₦60,000" },
       { name: "Oxygen Facials", price: "₦100,000" },
-      { name: "Microdermabrasion", price: "₦60,000" },
+      { name: "Crystal Resurfacing", price: "₦60,000" },
       { name: "Chemical Peel Facial", price: "₦100,000" },
       { name: "Derma Planning", price: "₦60,000" },
       { name: "Gold / Luxury Facials", price: "₦120,000" },
@@ -131,36 +131,36 @@ export const spaServices: ServiceCategory[] = [
     category: "PRP",
     items: [
       { name: "PRP Hip Dip Filler", price: "₦200,000" },
-      { name: "PRP Stretch Marks Removal", price: "₦150,000" },
+      { name: "PRP Skin Smoothing", price: "₦150,000" },
       { name: "PRP Melasma", price: "₦200,000" },
-      { name: "PRP Butt Filler", price: "₦200,000" },
+      { name: "PRP Glute Enhancement", price: "₦200,000" },
       { name: "PRP Nano Facials", price: "₦150,000" },
-      { name: "PRP Hair Loss", price: "₦160,000" },
-      { name: "PRP Breast Fillers", price: "₦200,000" },
-      { name: "PRP O Shot", price: "₦200,000" },
-      { name: "PRP P Shot", price: "₦200,000" },
+      { name: "PRP Hair Restoration", price: "₦160,000" },
+      { name: "PRP Bust Enhancement", price: "₦200,000" },
+      { name: "PRP Wellness Shot (F)", price: "₦200,000" },
+      { name: "PRP Wellness Shot (M)", price: "₦200,000" },
     ],
   },
   {
-    category: "Micro Needling",
+    category: "Collagen Induction Therapy",
     items: [
-      { name: "Severe Acne Treatment", price: "₦100,000" },
+      { name: "Advanced Clarity", price: "₦100,000" },
       { name: "Flawless Face", price: "₦90,000" },
     ],
   },
   {
-    category: "Vaginal Treatment",
+    category: "Feminine Wellness",
     items: [
-      { name: "Vaginal Steam", price: "₦60,000" },
-      { name: "Vaginal Sweetness", price: "₦60,000" },
-      { name: "Vaginal Tightening", price: "₦60,000" },
+      { name: "V-Steam", price: "₦60,000" },
+      { name: "V-Freshness", price: "₦60,000" },
+      { name: "V-Rejuvenation", price: "₦60,000" },
     ],
   },
   {
     category: "Vacuum Enhancement Therapy",
     items: [
-      { name: "Butt", price: "₦40,000" },
-      { name: "Breast", price: "₦40,000" },
+      { name: "Glutes", price: "₦40,000" },
+      { name: "Bust", price: "₦40,000" },
       { name: "Hips", price: "₦40,000" },
     ],
   },
@@ -223,7 +223,7 @@ export const massageServices: MassageService[] = [
     ],
   },
   {
-    name: "Nu-Ru / Erotic",
+    name: "Nuru Signature",
     items: [
       { duration: "60 mins", price: "₦80,000" },
       { duration: "90 mins", price: "₦120,000" },
@@ -259,7 +259,7 @@ export const massageServices: MassageService[] = [
     ],
   },
   {
-    name: "Couples Nu-Ru / Erotic",
+    name: "Couples Nuru Signature",
     items: [
       { duration: "60 mins", price: "₦200,000" },
       { duration: "90 mins", price: "₦300,000" },
@@ -268,7 +268,7 @@ export const massageServices: MassageService[] = [
     ],
   },
   {
-    name: "Four Hand Nu-Ru / Erotic",
+    name: "Four Hand Nuru Signature",
     items: [
       { duration: "60 mins", price: "₦200,000" },
       { duration: "90 mins", price: "₦300,000" },
@@ -277,7 +277,7 @@ export const massageServices: MassageService[] = [
     ],
   },
   {
-    name: "Swedish Nu-Ru / Erotic",
+    name: "Swedish Nuru Signature",
     items: [
       { duration: "60 mins", price: "₦90,000" },
       { duration: "90 mins", price: "₦140,000" },
@@ -286,7 +286,7 @@ export const massageServices: MassageService[] = [
     ],
   },
   {
-    name: "Deep Tissue Nu-Ru / Erotic",
+    name: "Deep Tissue Nuru Signature",
     items: [
       { duration: "60 mins", price: "₦100,000" },
       { duration: "90 mins", price: "₦150,000" },
