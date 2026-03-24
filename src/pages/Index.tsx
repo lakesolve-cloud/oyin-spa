@@ -55,7 +55,7 @@ const Index = () => {
             <motion.p
               custom={2}
               variants={fadeUp}
-              className="text-lg md:text-xl text-warm-stone/90 max-w-xl mb-10 leading-relaxed"
+              className="text-xl md:text-2xl text-warm-stone/90 max-w-xl mb-10 leading-relaxed"
             >
               An appointment-only, concierge-style spa experience — in our dedicated studio or the comfort of your home.
             </motion.p>
