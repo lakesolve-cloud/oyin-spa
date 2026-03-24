@@ -163,7 +163,7 @@ const Index = () => {
               >
                 <p className="text-xs tracking-[0.2em] uppercase text-muted-foreground mb-4">{service.duration}</p>
                 <h3 className="font-serif text-xl mb-4 text-foreground">{service.title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed mb-6">{service.desc}</p>
+                <p className="text-base text-muted-foreground leading-relaxed mb-6">{service.desc}</p>
                 <Link
                   to="/services"
                   className="text-xs tracking-[0.15em] uppercase text-accent hover:text-foreground transition-colors inline-flex items-center gap-2"
