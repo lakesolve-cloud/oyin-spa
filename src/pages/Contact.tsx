@@ -30,10 +30,7 @@ const contactDetails = [
 
 const Contact = () => {
   return (
-    <Layout
-      title="Contact Us — Oyin Massage & Spa"
-      description="Get in touch with Oyin Massage & Spa. Visit us at 82 Akerele St, Surulere, Lagos or reach out via phone, email, or WhatsApp."
-    >
+    <Layout>
       {/* Hero */}
       <section className="pt-32 pb-20 lg:pt-40 lg:pb-28 bg-secondary">
         <div className="container mx-auto px-6 lg:px-12 text-center">
