@@ -10,6 +10,7 @@ const navLinks = [
   { href: "/services", label: "Services" },
   { href: "/mobile-spa", label: "Mobile Spa" },
   { href: "/membership", label: "Membership" },
+  { href: "/contact", label: "Contact" },
 ];
 
 const Navbar = () => {
