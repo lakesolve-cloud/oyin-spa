@@ -438,7 +438,7 @@ const Booking = () => {
                   className="w-full py-4 text-xs tracking-[0.2em] uppercase bg-primary text-primary-foreground hover:bg-warm-taupe transition-colors duration-300"
                   onClick={() => {
                     const msg = `Hello, I'd like to confirm my booking:\n\nCategory: ${selectedCategory}\nService: ${currentService?.name}\nPrice: ${currentService?.price}${addHotStone ? " + ₦10,000 (Hot Stone)" : ""}\nLocation: ${locationOptions.find(l => l.id === selectedLocation)?.label}\nDate: ${selectedDate}\nTime: ${selectedTime}\nTherapist: ${selectedTherapistData?.name}\n\nI'm ready to pay the deposit.`;
-                    window.open("https://wa.me/2348119636766?text=" + encodeURIComponent(msg), "_blank");
+                    window.open("https://wa.me/2347033948417?text=" + encodeURIComponent(msg), "_blank");
                   }}
                 >
                   Confirm & Pay Deposit via WhatsApp

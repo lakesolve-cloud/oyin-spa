@@ -47,7 +47,7 @@ const Index = () => {
             <motion.h1
               custom={1}
               variants={fadeUp}
-              className="font-serif text-4xl md:text-6xl lg:text-7xl leading-[1.1] text-warm-cream mb-8"
+              className="font-serif text-5xl md:text-7xl lg:text-8xl leading-[1.05] text-warm-cream mb-8 font-bold"
             >
               Luxury Wellness.{" "}
               <span className="italic">Delivered to You.</span>
@@ -55,7 +55,7 @@ const Index = () => {
             <motion.p
               custom={2}
               variants={fadeUp}
-              className="text-lg md:text-xl text-warm-stone/90 max-w-xl mb-10 leading-relaxed"
+              className="text-xl md:text-2xl text-warm-stone/90 max-w-xl mb-10 leading-relaxed"
             >
               An appointment-only, concierge-style spa experience — in our dedicated studio or the comfort of your home.
             </motion.p>
@@ -99,7 +99,7 @@ const Index = () => {
             <motion.p custom={0} variants={fadeUp} className="text-xs tracking-[0.3em] uppercase text-muted-foreground mb-4">
               Our Promise
             </motion.p>
-            <motion.h2 custom={1} variants={fadeUp} className="font-serif text-3xl md:text-5xl text-foreground">
+            <motion.h2 custom={1} variants={fadeUp} className="font-serif text-4xl md:text-5xl lg:text-6xl text-foreground font-bold">
               The Oyin Standard
             </motion.h2>
           </motion.div>
@@ -122,7 +122,7 @@ const Index = () => {
               >
                 <item.icon className="w-8 h-8 mx-auto mb-6 text-accent" strokeWidth={1.2} />
                 <h3 className="font-serif text-lg mb-3 text-foreground">{item.title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
+                <p className="text-base text-muted-foreground leading-relaxed">{item.desc}</p>
               </motion.div>
             ))}
           </div>
@@ -141,7 +141,7 @@ const Index = () => {
             <motion.p custom={0} variants={fadeUp} className="text-xs tracking-[0.3em] uppercase text-muted-foreground mb-4">
               What We Offer
             </motion.p>
-            <motion.h2 custom={1} variants={fadeUp} className="font-serif text-3xl md:text-5xl text-foreground">
+            <motion.h2 custom={1} variants={fadeUp} className="font-serif text-4xl md:text-5xl lg:text-6xl text-foreground font-bold">
               Signature Experiences
             </motion.h2>
           </motion.div>
@@ -163,7 +163,7 @@ const Index = () => {
               >
                 <p className="text-xs tracking-[0.2em] uppercase text-muted-foreground mb-4">{service.duration}</p>
                 <h3 className="font-serif text-xl mb-4 text-foreground">{service.title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed mb-6">{service.desc}</p>
+                <p className="text-base text-muted-foreground leading-relaxed mb-6">{service.desc}</p>
                 <Link
                   to="/services"
                   className="text-xs tracking-[0.15em] uppercase text-accent hover:text-foreground transition-colors inline-flex items-center gap-2"
@@ -205,10 +205,10 @@ const Index = () => {
               <motion.p custom={0} variants={fadeUp} className="text-xs tracking-[0.3em] uppercase text-muted-foreground mb-4">
                 Our Signature Offering
               </motion.p>
-              <motion.h2 custom={1} variants={fadeUp} className="font-serif text-3xl md:text-4xl text-foreground mb-6">
+              <motion.h2 custom={1} variants={fadeUp} className="font-serif text-4xl md:text-5xl text-foreground mb-6 font-bold">
                 The Luxury of Not Having to Go Anywhere
               </motion.h2>
-              <motion.p custom={2} variants={fadeUp} className="text-muted-foreground leading-relaxed mb-6">
+              <motion.p custom={2} variants={fadeUp} className="text-lg text-muted-foreground leading-relaxed mb-6">
                 Skip the traffic. Skip the stress. Our mobile spa team brings a complete, 
                 premium spa experience directly to your home, hotel, or office — anywhere in Lagos.
               </motion.p>
@@ -275,15 +275,15 @@ const Index = () => {
               <motion.p custom={0} variants={fadeUp} className="text-xs tracking-[0.3em] uppercase text-muted-foreground mb-4">
                 Not for Everyone
               </motion.p>
-              <motion.h2 custom={1} variants={fadeUp} className="font-serif text-3xl md:text-4xl text-foreground mb-6">
+              <motion.h2 custom={1} variants={fadeUp} className="font-serif text-4xl md:text-5xl text-foreground mb-6 font-bold">
                 We Don't Compete on Price. We Deliver on Experience.
               </motion.h2>
-              <motion.p custom={2} variants={fadeUp} className="text-muted-foreground leading-relaxed mb-6">
+              <motion.p custom={2} variants={fadeUp} className="text-lg text-muted-foreground leading-relaxed mb-6">
                 Oyin is built for those who understand that true wellness is an investment — in your body, 
                 your peace, and your time. We maintain small daily numbers to ensure every client receives 
                 our undivided attention and the highest standard of care.
               </motion.p>
-              <motion.p custom={3} variants={fadeUp} className="text-muted-foreground leading-relaxed mb-10">
+              <motion.p custom={3} variants={fadeUp} className="text-lg text-muted-foreground leading-relaxed mb-10">
                 If you value professionalism, excellence, and an experience that respects your standards — 
                 we were made for you.
               </motion.p>
@@ -312,7 +312,7 @@ const Index = () => {
             <motion.p custom={0} variants={fadeUp} className="text-xs tracking-[0.3em] uppercase text-warm-stone mb-6">
               Your Wellness Awaits
             </motion.p>
-            <motion.h2 custom={1} variants={fadeUp} className="font-serif text-3xl md:text-5xl lg:text-6xl text-warm-cream mb-8 max-w-3xl mx-auto leading-tight">
+            <motion.h2 custom={1} variants={fadeUp} className="font-serif text-4xl md:text-5xl lg:text-7xl text-warm-cream mb-8 max-w-3xl mx-auto leading-tight font-bold">
               Ready to Experience <span className="italic">Elevated Wellness?</span>
             </motion.h2>
             <motion.p custom={2} variants={fadeUp} className="text-warm-stone/80 max-w-xl mx-auto mb-12">
