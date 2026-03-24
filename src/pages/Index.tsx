@@ -312,7 +312,7 @@ const Index = () => {
             <motion.p custom={0} variants={fadeUp} className="text-xs tracking-[0.3em] uppercase text-warm-stone mb-6">
               Your Wellness Awaits
             </motion.p>
-            <motion.h2 custom={1} variants={fadeUp} className="font-serif text-3xl md:text-5xl lg:text-6xl text-warm-cream mb-8 max-w-3xl mx-auto leading-tight">
+            <motion.h2 custom={1} variants={fadeUp} className="font-serif text-4xl md:text-5xl lg:text-7xl text-warm-cream mb-8 max-w-3xl mx-auto leading-tight font-bold">
               Ready to Experience <span className="italic">Elevated Wellness?</span>
             </motion.h2>
             <motion.p custom={2} variants={fadeUp} className="text-warm-stone/80 max-w-xl mx-auto mb-12">
