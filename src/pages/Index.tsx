@@ -278,7 +278,7 @@ const Index = () => {
               <motion.h2 custom={1} variants={fadeUp} className="font-serif text-4xl md:text-5xl text-foreground mb-6 font-bold">
                 We Don't Compete on Price. We Deliver on Experience.
               </motion.h2>
-              <motion.p custom={2} variants={fadeUp} className="text-muted-foreground leading-relaxed mb-6">
+              <motion.p custom={2} variants={fadeUp} className="text-lg text-muted-foreground leading-relaxed mb-6">
                 Oyin is built for those who understand that true wellness is an investment — in your body, 
                 your peace, and your time. We maintain small daily numbers to ensure every client receives 
                 our undivided attention and the highest standard of care.
