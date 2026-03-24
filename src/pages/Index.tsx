@@ -208,7 +208,7 @@ const Index = () => {
               <motion.h2 custom={1} variants={fadeUp} className="font-serif text-4xl md:text-5xl text-foreground mb-6 font-bold">
                 The Luxury of Not Having to Go Anywhere
               </motion.h2>
-              <motion.p custom={2} variants={fadeUp} className="text-muted-foreground leading-relaxed mb-6">
+              <motion.p custom={2} variants={fadeUp} className="text-lg text-muted-foreground leading-relaxed mb-6">
                 Skip the traffic. Skip the stress. Our mobile spa team brings a complete, 
                 premium spa experience directly to your home, hotel, or office — anywhere in Lagos.
               </motion.p>
