@@ -122,7 +122,7 @@ const Index = () => {
               >
                 <item.icon className="w-8 h-8 mx-auto mb-6 text-accent" strokeWidth={1.2} />
                 <h3 className="font-serif text-lg mb-3 text-foreground">{item.title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
+                <p className="text-base text-muted-foreground leading-relaxed">{item.desc}</p>
               </motion.div>
             ))}
           </div>
