@@ -29,6 +29,7 @@ const App = () => (
           <Route path="/mobile-spa" element={<MobileSpa />} />
           <Route path="/membership" element={<Membership />} />
           <Route path="/booking" element={<Booking />} />
+          <Route path="/contact" element={<Contact />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="*" element={<NotFound />} />
