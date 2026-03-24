@@ -9,7 +9,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
           {/* Brand */}
           <div className="lg:col-span-1">
-            <img src={oyinLogo} alt="Oyin Massage & Spa" className="h-14 w-auto rounded mb-4" />
+            <img src={oyinLogo} alt="Oyin Massage & Spa" className="h-18 w-auto rounded mb-4" />
             <p className="text-sm leading-relaxed opacity-80">
               Luxury wellness, delivered with professionalism and care. Lagos' premier appointment-only massage and spa experience.
             </p>
