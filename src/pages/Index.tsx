@@ -283,7 +283,7 @@ const Index = () => {
                 your peace, and your time. We maintain small daily numbers to ensure every client receives 
                 our undivided attention and the highest standard of care.
               </motion.p>
-              <motion.p custom={3} variants={fadeUp} className="text-muted-foreground leading-relaxed mb-10">
+              <motion.p custom={3} variants={fadeUp} className="text-lg text-muted-foreground leading-relaxed mb-10">
                 If you value professionalism, excellence, and an experience that respects your standards — 
                 we were made for you.
               </motion.p>
