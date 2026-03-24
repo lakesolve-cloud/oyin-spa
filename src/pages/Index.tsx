@@ -47,7 +47,7 @@ const Index = () => {
             <motion.h1
               custom={1}
               variants={fadeUp}
-              className="font-serif text-4xl md:text-6xl lg:text-7xl leading-[1.1] text-warm-cream mb-8"
+              className="font-serif text-5xl md:text-7xl lg:text-8xl leading-[1.05] text-warm-cream mb-8 font-bold"
             >
               Luxury Wellness.{" "}
               <span className="italic">Delivered to You.</span>
