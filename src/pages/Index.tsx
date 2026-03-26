@@ -67,12 +67,6 @@ const Index = () => {
                 Book Your Experience
                 <ArrowRight size={14} />
               </Link>
-              <Link
-                to="/mobile-spa"
-                className="inline-flex items-center gap-3 px-10 py-4 text-xs tracking-[0.2em] uppercase border border-warm-cream/40 text-warm-cream hover:bg-warm-cream/10 transition-colors duration-300"
-              >
-                Mobile Spa
-              </Link>
             </motion.div>
           </motion.div>
         </div>
