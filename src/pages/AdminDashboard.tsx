@@ -13,13 +13,10 @@ const DAYS = [
   "Friday",
   "Saturday",
 ];
-const TIME_OPTIONS = Array.from({ length: 24 * 2 }, (_, i) => {
-  const hours = Math.floor(i / 2)
-    .toString()
-    .padStart(2, "0");
-  const minutes = i % 2 === 0 ? "00" : "30";
-  return `${hours}:${minutes}`;
-});
+const TIME_OPTIONS = [
+  ...Array.from({ length: 24 }, (_, i) => `${String(i).padStart(2, "0")}:00`),
+  "23:59",
+];
 
 interface Therapist {
   id: string;
@@ -58,9 +55,9 @@ const AdminDashboard = () => {
 
   // Availability form
   const [slotTherapist, setSlotTherapist] = useState("");
-  const [slotDay, setSlotDay] = useState(1);
-  const [slotStart, setSlotStart] = useState("09:00");
-  const [slotEnd, setSlotEnd] = useState("10:30");
+  const [slotDays, setSlotDays] = useState<number[]>([1]);
+  const [slotStart, setSlotStart] = useState("12:00");
+  const [slotEnd, setSlotEnd] = useState("00:00");
 
   useEffect(() => {
     checkAuth();
@@ -186,15 +183,20 @@ const AdminDashboard = () => {
       toast.error("Select a therapist");
       return;
     }
-    const { error } = await supabase.from("availability_slots").insert({
+    if (slotDays.length === 0) {
+      toast.error("Select at least one day");
+      return;
+    }
+    const rows = slotDays.map((d) => ({
       therapist_id: slotTherapist,
-      day_of_week: slotDay,
+      day_of_week: d,
       start_time: slotStart,
       end_time: slotEnd,
-    });
+    }));
+    const { error } = await supabase.from("availability_slots").insert(rows);
     if (error) toast.error(error.message);
     else {
-      toast.success("Slot added");
+      toast.success(`${rows.length} slot${rows.length > 1 ? "s" : ""} added`);
       fetchData();
     }
   };
@@ -431,20 +433,51 @@ const AdminDashboard = () => {
                 </select>
               </div>
               <div>
-                <label className="block text-xs tracking-widest uppercase text-muted-foreground mb-1">
-                  Day
-                </label>
-                <select
-                  value={slotDay}
-                  onChange={(e) => setSlotDay(Number(e.target.value))}
-                  className="w-full px-4 py-2 border border-border bg-background text-foreground text-sm focus:outline-none focus:border-primary"
-                >
-                  {DAYS.map((d, i) => (
-                    <option key={i} value={i}>
-                      {d}
-                    </option>
-                  ))}
-                </select>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="block text-xs tracking-widest uppercase text-muted-foreground">
+                    Days
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setSlotDays(
+                        slotDays.length === DAYS.length
+                          ? []
+                          : DAYS.map((_, i) => i),
+                      )
+                    }
+                    className="text-[10px] tracking-widest uppercase text-primary hover:opacity-80"
+                  >
+                    {slotDays.length === DAYS.length
+                      ? "Clear all"
+                      : "Select all"}
+                  </button>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  {DAYS.map((d, i) => {
+                    const active = slotDays.includes(i);
+                    return (
+                      <button
+                        type="button"
+                        key={i}
+                        onClick={() =>
+                          setSlotDays(
+                            active
+                              ? slotDays.filter((x) => x !== i)
+                              : [...slotDays, i],
+                          )
+                        }
+                        className={`px-3 py-2 text-xs tracking-wider uppercase border transition-colors ${
+                          active
+                            ? "bg-primary text-primary-foreground border-primary"
+                            : "bg-background text-foreground border-border hover:border-primary"
+                        }`}
+                      >
+                        {d.slice(0, 3)}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
               <div className="flex gap-3">
                 <div className="flex-1">
