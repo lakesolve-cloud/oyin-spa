@@ -30,9 +30,7 @@ export const spaServices: ServiceCategory[] = [
   },
   {
     category: "Skin Tag Care",
-    items: [
-      { name: "Per Area", price: "₦40,000" },
-    ],
+    items: [{ name: "Per Area", price: "₦40,000" }],
   },
   {
     category: "Ultra Cavitation Body Sculpting",
@@ -86,9 +84,7 @@ export const spaServices: ServiceCategory[] = [
   },
   {
     category: "Lipolysis",
-    items: [
-      { name: "Per Vial", price: "₦150,000" },
-    ],
+    items: [{ name: "Per Vial", price: "₦150,000" }],
   },
   {
     category: "Facial Treatments",
@@ -304,4 +300,142 @@ export const quickMassages: ServiceItem[] = [
 
 export const massageAddOns: ServiceItem[] = [
   { name: "Hot Stone Add-On", price: "₦10,000" },
+];
+
+export const mobileMassageServices: MassageService[] = [
+  {
+    name: "Swedish",
+    items: [
+      { duration: "60 mins", price: "₦65,000" },
+      { duration: "90 mins", price: "₦95,000" },
+      { duration: "120 mins", price: "₦130,000" },
+      { duration: "180 mins", price: "₦190,000" },
+    ],
+  },
+  {
+    name: "Deep Tissue Massage",
+    items: [
+      { duration: "60 mins", price: "₦80,000" },
+      { duration: "90 mins", price: "₦120,000" },
+      { duration: "120 mins", price: "₦160,000" },
+      { duration: "180 mins", price: "₦240,000" },
+    ],
+  },
+  {
+    name: "Nuru Signature",
+    items: [
+      { duration: "60 mins", price: "₦100,000" },
+      { duration: "90 mins", price: "₦150,000" },
+      { duration: "120 mins", price: "₦200,000" },
+      { duration: "180 mins", price: "₦300,000" },
+    ],
+  },
+  {
+    name: "Couple Swedish",
+    items: [
+      { duration: "60 mins", price: "₦120,000" },
+      { duration: "90 mins", price: "₦160,000" },
+      { duration: "120 mins", price: "₦240,000" },
+      { duration: "180 mins", price: "₦360,000" },
+    ],
+  },
+  {
+    name: "Couple Deep Tissue",
+    items: [
+      { duration: "60 mins", price: "₦150,000" },
+      { duration: "90 mins", price: "₦225,000" },
+      { duration: "120 mins", price: "₦300,000" },
+      { duration: "180 mins", price: "₦450,000" },
+    ],
+  },
+  {
+    name: "Couples Nuru Signature",
+    items: [
+      { duration: "60 mins", price: "₦250,000" },
+      { duration: "90 mins", price: "₦375,000" },
+      { duration: "120 mins", price: "₦500,000" },
+      { duration: "180 mins", price: "₦750,000" },
+    ],
+  },
+  {
+    name: "Four Hand Nuru Signature",
+    items: [
+      { duration: "60 mins", price: "₦250,000" },
+      { duration: "90 mins", price: "₦375,000" },
+      { duration: "120 mins", price: "₦500,000" },
+      { duration: "180 mins", price: "₦750,000" },
+    ],
+  },
+  {
+    name: "Swedish Nuru Signature",
+    items: [
+      { duration: "60 mins", price: "₦120,000" },
+      { duration: "90 mins", price: "₦180,000" },
+      { duration: "120 mins", price: "₦240,000" },
+      { duration: "180 mins", price: "₦360,000" },
+    ],
+  },
+  {
+    name: "Deep Tissue Nuru Signature",
+    items: [
+      { duration: "60 mins", price: "₦150,000" },
+      { duration: "90 mins", price: "₦230,000" },
+      { duration: "120 mins", price: "₦300,000" },
+      { duration: "180 mins", price: "₦450,000" },
+    ],
+  },
+];
+
+export const mobileQuickMassages: ServiceItem[] = [
+  { name: "Back Massage (30 mins)", price: "₦40,000" },
+  { name: "Foot Massage (15 mins)", price: "₦30,000" },
+  { name: "Head Massage (20 mins)", price: "₦30,000" },
+];
+
+export const mobileMassageAddOns: ServiceItem[] = [
+  { name: "Hot Stone Add-On", price: "₦15,000" },
+];
+
+export const mobileSpaServices: ServiceCategory[] = [
+  {
+    category: "Pedicure",
+    items: [
+      { name: "Classic Pedicure", price: "₦35,000" },
+      { name: "Deluxe Pedicure", price: "₦50,000" },
+      { name: "Jelly Pedicure", price: "₦50,000" },
+      { name: "Paraffin Pedicure", price: "₦60,000" },
+      { name: "Add-on: Gel (Toe Nails)", price: "₦12,000" },
+    ],
+  },
+  {
+    category: "Manicure",
+    items: [
+      { name: "Classic Manicure", price: "₦18,000" },
+      { name: "Deluxe Manicure", price: "₦25,000" },
+      { name: "Paraffin Manicure", price: "₦30,000" },
+    ],
+  },
+  {
+    category: "Mani + Pedi Combo",
+    items: [
+      { name: "Classic Mani + Pedi", price: "₦50,000" },
+      { name: "Deluxe Mani + Pedi", price: "₦70,000" },
+      { name: "Paraffin Mani + Pedi", price: "₦90,000" },
+    ],
+  },
+  {
+    category: "Body Waxing",
+    items: [
+      { name: "Under Arm", price: "₦30,000" },
+      { name: "Half Leg", price: "₦40,000" },
+      { name: "Full Leg", price: "₦50,000" },
+      { name: "Half Hand", price: "₦40,000" },
+      { name: "Full Hand", price: "₦50,000" },
+      { name: "Facial Waxing", price: "₦20,000" },
+      { name: "Chin", price: "₦30,000" },
+      { name: "Bikini", price: "₦50,000" },
+      { name: "Half Body", price: "₦70,000" },
+      { name: "Full Body", price: "₦100,000" },
+    ],
+  },
 ];
