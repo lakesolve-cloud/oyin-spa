@@ -1,18 +1,11 @@
+Dashboard new
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Plus, Trash2, LogOut, Upload, X } from "lucide-react";
 
-const DAYS = [
-  "Sunday",
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-];
+const DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const TIME_OPTIONS = [
   ...Array.from({ length: 24 }, (_, i) => `${String(i).padStart(2, "0")}:00`),
   "23:59",
@@ -39,9 +32,7 @@ const AdminDashboard = () => {
   const [therapists, setTherapists] = useState<Therapist[]>([]);
   const [slots, setSlots] = useState<AvailabilitySlot[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<"therapists" | "availability">(
-    "therapists",
-  );
+  const [activeTab, setActiveTab] = useState<"therapists" | "availability">("therapists");
 
   // New therapist form
   const [showForm, setShowForm] = useState(false);
@@ -65,9 +56,7 @@ const AdminDashboard = () => {
   }, []);
 
   const checkAuth = async () => {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       navigate("/admin/login");
       return;
@@ -98,16 +87,12 @@ const AdminDashboard = () => {
   const uploadPhoto = async (file: File): Promise<string | null> => {
     const ext = file.name.split(".").pop();
     const path = `${Date.now()}.${ext}`;
-    const { error } = await supabase.storage
-      .from("therapist-photos")
-      .upload(path, file);
+    const { error } = await supabase.storage.from("therapist-photos").upload(path, file);
     if (error) {
       toast.error("Failed to upload photo");
       return null;
     }
-    const { data } = supabase.storage
-      .from("therapist-photos")
-      .getPublicUrl(path);
+    const { data } = supabase.storage.from("therapist-photos").getPublicUrl(path);
     return data.publicUrl;
   };
 
@@ -122,10 +107,7 @@ const AdminDashboard = () => {
 
     const { error } = await supabase.from("therapists").insert({
       name: formName,
-      specialties: formSpecialties
-        .split(",")
-        .map((s) => s.trim())
-        .filter(Boolean),
+      specialties: formSpecialties.split(",").map((s) => s.trim()).filter(Boolean),
       photo_url: photoUrl,
     });
 
@@ -202,10 +184,7 @@ const AdminDashboard = () => {
   };
 
   const handleDeleteSlot = async (id: string) => {
-    const { error } = await supabase
-      .from("availability_slots")
-      .delete()
-      .eq("id", id);
+    const { error } = await supabase.from("availability_slots").delete().eq("id", id);
     if (error) toast.error(error.message);
     else fetchData();
   };
@@ -228,10 +207,7 @@ const AdminDashboard = () => {
       {/* Header */}
       <header className="bg-primary text-primary-foreground px-6 py-4 flex items-center justify-between">
         <h1 className="font-serif text-lg">Oyin Admin</h1>
-        <button
-          onClick={handleLogout}
-          className="flex items-center gap-2 text-xs uppercase tracking-widest opacity-80 hover:opacity-100"
-        >
+        <button onClick={handleLogout} className="flex items-center gap-2 text-xs uppercase tracking-widest opacity-80 hover:opacity-100">
           <LogOut size={14} /> Logout
         </button>
       </header>
@@ -242,9 +218,7 @@ const AdminDashboard = () => {
           <button
             onClick={() => setActiveTab("therapists")}
             className={`pb-3 text-sm tracking-widest uppercase transition-colors ${
-              activeTab === "therapists"
-                ? "text-foreground border-b-2 border-primary"
-                : "text-muted-foreground"
+              activeTab === "therapists" ? "text-foreground border-b-2 border-primary" : "text-muted-foreground"
             }`}
           >
             Therapists
@@ -252,9 +226,7 @@ const AdminDashboard = () => {
           <button
             onClick={() => setActiveTab("availability")}
             className={`pb-3 text-sm tracking-widest uppercase transition-colors ${
-              activeTab === "availability"
-                ? "text-foreground border-b-2 border-primary"
-                : "text-muted-foreground"
+              activeTab === "availability" ? "text-foreground border-b-2 border-primary" : "text-muted-foreground"
             }`}
           >
             Availability
@@ -265,9 +237,7 @@ const AdminDashboard = () => {
         {activeTab === "therapists" && (
           <div>
             <div className="flex justify-between items-center mb-6">
-              <h2 className="font-serif text-xl text-foreground">
-                Manage Therapists
-              </h2>
+              <h2 className="font-serif text-xl text-foreground">Manage Therapists</h2>
               <button
                 onClick={() => setShowForm(!showForm)}
                 className="flex items-center gap-2 px-4 py-2 text-xs tracking-widest uppercase bg-primary text-primary-foreground hover:bg-primary/90"
@@ -278,14 +248,9 @@ const AdminDashboard = () => {
             </div>
 
             {showForm && (
-              <form
-                onSubmit={handleAddTherapist}
-                className="border border-border p-6 mb-8 space-y-4"
-              >
+              <form onSubmit={handleAddTherapist} className="border border-border p-6 mb-8 space-y-4">
                 <div>
-                  <label className="block text-xs tracking-widest uppercase text-muted-foreground mb-1">
-                    Name
-                  </label>
+                  <label className="block text-xs tracking-widest uppercase text-muted-foreground mb-1">Name</label>
                   <input
                     value={formName}
                     onChange={(e) => setFormName(e.target.value)}
@@ -294,9 +259,7 @@ const AdminDashboard = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs tracking-widest uppercase text-muted-foreground mb-1">
-                    Specialties (comma-separated)
-                  </label>
+                  <label className="block text-xs tracking-widest uppercase text-muted-foreground mb-1">Specialties (comma-separated)</label>
                   <input
                     value={formSpecialties}
                     onChange={(e) => setFormSpecialties(e.target.value)}
@@ -305,9 +268,7 @@ const AdminDashboard = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs tracking-widest uppercase text-muted-foreground mb-1">
-                    Photo
-                  </label>
+                  <label className="block text-xs tracking-widest uppercase text-muted-foreground mb-1">Photo</label>
                   <input
                     type="file"
                     accept="image/*"
@@ -327,35 +288,19 @@ const AdminDashboard = () => {
 
             <div className="space-y-4">
               {therapists.map((t) => (
-                <div
-                  key={t.id}
-                  className="border border-border p-5 flex items-center gap-5"
-                >
+                <div key={t.id} className="border border-border p-5 flex items-center gap-5">
                   <div className="w-20 h-20 flex-shrink-0 overflow-hidden bg-muted">
                     {t.photo_url ? (
-                      <img
-                        src={t.photo_url}
-                        alt={t.name}
-                        className="w-full h-full object-cover"
-                      />
+                      <img src={t.photo_url} alt={t.name} className="w-full h-full object-cover" />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center text-muted-foreground text-xs">
-                        No photo
-                      </div>
+                      <div className="w-full h-full flex items-center justify-center text-muted-foreground text-xs">No photo</div>
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-serif text-lg text-foreground">
-                      {t.name}
-                    </h3>
+                    <h3 className="font-serif text-lg text-foreground">{t.name}</h3>
                     <div className="flex flex-wrap gap-1 mt-1">
                       {t.specialties.map((s) => (
-                        <span
-                          key={s}
-                          className="text-[10px] tracking-wider uppercase px-2 py-0.5 bg-muted text-muted-foreground"
-                        >
-                          {s}
-                        </span>
+                        <span key={s} className="text-[10px] tracking-wider uppercase px-2 py-0.5 bg-muted text-muted-foreground">{s}</span>
                       ))}
                     </div>
                   </div>
@@ -364,9 +309,7 @@ const AdminDashboard = () => {
                       <input
                         type="checkbox"
                         checked={t.available}
-                        onChange={() =>
-                          handleToggleAvailable(t.id, t.available)
-                        }
+                        onChange={() => handleToggleAvailable(t.id, t.available)}
                         className="sr-only peer"
                       />
                       <div className="w-9 h-5 bg-muted rounded-full peer peer-checked:bg-primary transition-colors after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-background after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-full"></div>
@@ -381,24 +324,16 @@ const AdminDashboard = () => {
                           if (file) handleUpdatePhoto(t.id, file);
                         }}
                       />
-                      <Upload
-                        size={16}
-                        className="text-muted-foreground hover:text-foreground"
-                      />
+                      <Upload size={16} className="text-muted-foreground hover:text-foreground" />
                     </label>
                     <button onClick={() => handleDeleteTherapist(t.id)}>
-                      <Trash2
-                        size={16}
-                        className="text-destructive hover:text-destructive/80"
-                      />
+                      <Trash2 size={16} className="text-destructive hover:text-destructive/80" />
                     </button>
                   </div>
                 </div>
               ))}
               {therapists.length === 0 && (
-                <p className="text-sm text-muted-foreground text-center py-8">
-                  No therapists added yet.
-                </p>
+                <p className="text-sm text-muted-foreground text-center py-8">No therapists added yet.</p>
               )}
             </div>
           </div>
@@ -407,18 +342,11 @@ const AdminDashboard = () => {
         {/* Availability Tab */}
         {activeTab === "availability" && (
           <div>
-            <h2 className="font-serif text-xl text-foreground mb-6">
-              Manage Availability
-            </h2>
+            <h2 className="font-serif text-xl text-foreground mb-6">Manage Availability</h2>
 
-            <form
-              onSubmit={handleAddSlot}
-              className="border border-border p-6 mb-8 grid grid-cols-1 sm:grid-cols-2 gap-4"
-            >
+            <form onSubmit={handleAddSlot} className="border border-border p-6 mb-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="sm:col-span-2">
-                <label className="block text-xs tracking-widest uppercase text-muted-foreground mb-1">
-                  Therapist
-                </label>
+                <label className="block text-xs tracking-widest uppercase text-muted-foreground mb-1">Therapist</label>
                 <select
                   value={slotTherapist}
                   onChange={(e) => setSlotTherapist(e.target.value)}
@@ -426,31 +354,21 @@ const AdminDashboard = () => {
                 >
                   <option value="">Select therapist</option>
                   {therapists.map((t) => (
-                    <option key={t.id} value={t.id}>
-                      {t.name}
-                    </option>
+                    <option key={t.id} value={t.id}>{t.name}</option>
                   ))}
                 </select>
               </div>
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <label className="block text-xs tracking-widest uppercase text-muted-foreground">
-                    Days
-                  </label>
+                  <label className="block text-xs tracking-widest uppercase text-muted-foreground">Days</label>
                   <button
                     type="button"
                     onClick={() =>
-                      setSlotDays(
-                        slotDays.length === DAYS.length
-                          ? []
-                          : DAYS.map((_, i) => i),
-                      )
+                      setSlotDays(slotDays.length === DAYS.length ? [] : DAYS.map((_, i) => i))
                     }
                     className="text-[10px] tracking-widest uppercase text-primary hover:opacity-80"
                   >
-                    {slotDays.length === DAYS.length
-                      ? "Clear all"
-                      : "Select all"}
+                    {slotDays.length === DAYS.length ? "Clear all" : "Select all"}
                   </button>
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
@@ -462,9 +380,7 @@ const AdminDashboard = () => {
                         key={i}
                         onClick={() =>
                           setSlotDays(
-                            active
-                              ? slotDays.filter((x) => x !== i)
-                              : [...slotDays, i],
+                            active ? slotDays.filter((x) => x !== i) : [...slotDays, i]
                           )
                         }
                         className={`px-3 py-2 text-xs tracking-wider uppercase border transition-colors ${
@@ -481,35 +397,23 @@ const AdminDashboard = () => {
               </div>
               <div className="flex gap-3">
                 <div className="flex-1">
-                  <label className="block text-xs tracking-widest uppercase text-muted-foreground mb-1">
-                    Start
-                  </label>
+                  <label className="block text-xs tracking-widest uppercase text-muted-foreground mb-1">Start</label>
                   <select
                     value={slotStart}
                     onChange={(e) => setSlotStart(e.target.value)}
                     className="w-full px-4 py-2 border border-border bg-background text-foreground text-sm focus:outline-none focus:border-primary"
                   >
-                    {TIME_OPTIONS.map((t) => (
-                      <option key={t} value={t}>
-                        {t}
-                      </option>
-                    ))}
+                    {TIME_OPTIONS.map((t) => <option key={t} value={t}>{t}</option>)}
                   </select>
                 </div>
                 <div className="flex-1">
-                  <label className="block text-xs tracking-widest uppercase text-muted-foreground mb-1">
-                    End
-                  </label>
+                  <label className="block text-xs tracking-widest uppercase text-muted-foreground mb-1">End</label>
                   <select
                     value={slotEnd}
                     onChange={(e) => setSlotEnd(e.target.value)}
                     className="w-full px-4 py-2 border border-border bg-background text-foreground text-sm focus:outline-none focus:border-primary"
                   >
-                    {TIME_OPTIONS.map((t) => (
-                      <option key={t} value={t}>
-                        {t}
-                      </option>
-                    ))}
+                    {TIME_OPTIONS.map((t) => <option key={t} value={t}>{t}</option>)}
                   </select>
                 </div>
               </div>
@@ -529,18 +433,12 @@ const AdminDashboard = () => {
               if (tSlots.length === 0) return null;
               return (
                 <div key={t.id} className="mb-6">
-                  <h3 className="font-serif text-lg text-foreground mb-3">
-                    {t.name}
-                  </h3>
+                  <h3 className="font-serif text-lg text-foreground mb-3">{t.name}</h3>
                   <div className="space-y-2">
                     {tSlots.map((s) => (
-                      <div
-                        key={s.id}
-                        className="flex items-center justify-between border border-border px-4 py-3"
-                      >
+                      <div key={s.id} className="flex items-center justify-between border border-border px-4 py-3">
                         <span className="text-sm text-foreground">
-                          {DAYS[s.day_of_week]} — {s.start_time.slice(0, 5)} to{" "}
-                          {s.end_time.slice(0, 5)}
+                          {DAYS[s.day_of_week]} — {s.start_time.slice(0, 5)} to {s.end_time.slice(0, 5)}
                         </span>
                         <button onClick={() => handleDeleteSlot(s.id)}>
                           <Trash2 size={14} className="text-destructive" />
