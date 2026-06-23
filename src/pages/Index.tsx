@@ -57,7 +57,7 @@ const Index = () => {
               variants={fadeUp}
               className="text-xl md:text-2xl text-warm-stone/90 max-w-xl mb-10 leading-relaxed"
             >
-              An appointment-only, concierge-style spa experience — in our dedicated studio or the comfort of your home.
+              An appointment-only, concierge-style spa experience, in our dedicated studio or the comfort of your home.
             </motion.p>
             <motion.div custom={3} variants={fadeUp} className="flex flex-wrap gap-4">
               <Link
