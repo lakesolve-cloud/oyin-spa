@@ -10,12 +10,16 @@ const TIME_OPTIONS = [
   "23:59",
 ];
 
+type ServiceMode = "walk_in" | "mobile" | "both";
+
 interface Therapist {
   id: string;
   name: string;
   specialties: string[];
   photo_url: string | null;
+  photo_urls: string[];
   available: boolean;
+  service_mode: ServiceMode;
 }
 
 interface AvailabilitySlot {
@@ -25,6 +29,12 @@ interface AvailabilitySlot {
   start_time: string;
   end_time: string;
 }
+
+const SERVICE_MODE_LABEL: Record<ServiceMode, string> = {
+  walk_in: "Walk-In Only",
+  mobile: "Mobile Only",
+  both: "Walk-In & Mobile",
+};
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -37,7 +47,8 @@ const AdminDashboard = () => {
   const [showForm, setShowForm] = useState(false);
   const [formName, setFormName] = useState("");
   const [formSpecialties, setFormSpecialties] = useState("");
-  const [formPhoto, setFormPhoto] = useState<File | null>(null);
+  const [formPhotos, setFormPhotos] = useState<File[]>([]);
+  const [formServiceMode, setFormServiceMode] = useState<ServiceMode>("both");
   const [saving, setSaving] = useState(false);
 
   // Edit therapist
@@ -48,6 +59,7 @@ const AdminDashboard = () => {
   const [slotDays, setSlotDays] = useState<number[]>([1]);
   const [slotStart, setSlotStart] = useState("12:00");
   const [slotEnd, setSlotEnd] = useState("00:00");
+
 
   useEffect(() => {
     checkAuth();
@@ -85,7 +97,7 @@ const AdminDashboard = () => {
 
   const uploadPhoto = async (file: File): Promise<string | null> => {
     const ext = file.name.split(".").pop();
-    const path = `${Date.now()}.${ext}`;
+    const path = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
     const { error } = await supabase.storage.from("therapist-photos").upload(path, file);
     if (error) {
       toast.error("Failed to upload photo");
@@ -95,19 +107,27 @@ const AdminDashboard = () => {
     return data.publicUrl;
   };
 
+  const uploadPhotos = async (files: File[]): Promise<string[]> => {
+    const urls: string[] = [];
+    for (const file of files) {
+      const url = await uploadPhoto(file);
+      if (url) urls.push(url);
+    }
+    return urls;
+  };
+
   const handleAddTherapist = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
 
-    let photoUrl: string | null = null;
-    if (formPhoto) {
-      photoUrl = await uploadPhoto(formPhoto);
-    }
+    const photoUrls = formPhotos.length ? await uploadPhotos(formPhotos) : [];
 
     const { error } = await supabase.from("therapists").insert({
       name: formName,
       specialties: formSpecialties.split(",").map((s) => s.trim()).filter(Boolean),
-      photo_url: photoUrl,
+      photo_url: photoUrls[0] ?? null,
+      photo_urls: photoUrls,
+      service_mode: formServiceMode,
     });
 
     if (error) {
@@ -117,27 +137,42 @@ const AdminDashboard = () => {
       setShowForm(false);
       setFormName("");
       setFormSpecialties("");
-      setFormPhoto(null);
+      setFormPhotos([]);
+      setFormServiceMode("both");
       fetchData();
     }
     setSaving(false);
   };
 
-  const handleUpdatePhoto = async (therapistId: string, file: File) => {
-    const photoUrl = await uploadPhoto(file);
-    if (!photoUrl) return;
+  const handleAddPhotos = async (therapistId: string, files: File[]) => {
+    const newUrls = await uploadPhotos(files);
+    if (newUrls.length === 0) return;
+
+    const therapist = therapists.find((t) => t.id === therapistId);
+    const existing = therapist?.photo_urls ?? [];
+    const merged = [...existing, ...newUrls];
 
     const { error } = await supabase
       .from("therapists")
-      .update({ photo_url: photoUrl })
+      .update({
+        photo_urls: merged,
+        photo_url: therapist?.photo_url ?? merged[0],
+      })
       .eq("id", therapistId);
 
     if (error) toast.error(error.message);
     else {
-      toast.success("Photo updated");
+      toast.success(`${newUrls.length} photo${newUrls.length > 1 ? "s" : ""} added`);
       fetchData();
     }
   };
+
+  const handleUpdateServiceMode = async (id: string, mode: ServiceMode) => {
+    const { error } = await supabase.from("therapists").update({ service_mode: mode }).eq("id", id);
+    if (error) toast.error(error.message);
+    else fetchData();
+  };
+
 
   const handleToggleAvailable = async (id: string, current: boolean) => {
     const { error } = await supabase
@@ -267,13 +302,29 @@ const AdminDashboard = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs tracking-widest uppercase text-muted-foreground mb-1">Photo</label>
+                  <label className="block text-xs tracking-widest uppercase text-muted-foreground mb-1">Photos (select one or many)</label>
                   <input
                     type="file"
                     accept="image/*"
-                    onChange={(e) => setFormPhoto(e.target.files?.[0] || null)}
+                    multiple
+                    onChange={(e) => setFormPhotos(Array.from(e.target.files ?? []))}
                     className="text-sm text-muted-foreground"
                   />
+                  {formPhotos.length > 0 && (
+                    <p className="text-xs text-muted-foreground mt-1">{formPhotos.length} file{formPhotos.length > 1 ? "s" : ""} selected</p>
+                  )}
+                </div>
+                <div>
+                  <label className="block text-xs tracking-widest uppercase text-muted-foreground mb-1">Available For</label>
+                  <select
+                    value={formServiceMode}
+                    onChange={(e) => setFormServiceMode(e.target.value as ServiceMode)}
+                    className="w-full px-4 py-2 border border-border bg-background text-foreground text-sm focus:outline-none focus:border-primary"
+                  >
+                    <option value="both">Walk-In & Mobile (Both)</option>
+                    <option value="walk_in">Walk-In Only</option>
+                    <option value="mobile">Mobile / Home / Hotel Only</option>
+                  </select>
                 </div>
                 <button
                   type="submit"
@@ -288,11 +339,16 @@ const AdminDashboard = () => {
             <div className="space-y-4">
               {therapists.map((t) => (
                 <div key={t.id} className="border border-border p-5 flex items-center gap-5">
-                  <div className="w-20 h-20 flex-shrink-0 overflow-hidden bg-muted">
+                  <div className="w-20 h-20 flex-shrink-0 overflow-hidden bg-muted relative">
                     {t.photo_url ? (
                       <img src={t.photo_url} alt={t.name} className="w-full h-full object-cover" />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-muted-foreground text-xs">No photo</div>
+                    )}
+                    {t.photo_urls && t.photo_urls.length > 1 && (
+                      <span className="absolute bottom-0 right-0 text-[10px] bg-primary text-primary-foreground px-1.5">
+                        +{t.photo_urls.length - 1}
+                      </span>
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -301,6 +357,17 @@ const AdminDashboard = () => {
                       {t.specialties.map((s) => (
                         <span key={s} className="text-[10px] tracking-wider uppercase px-2 py-0.5 bg-muted text-muted-foreground">{s}</span>
                       ))}
+                    </div>
+                    <div className="mt-2">
+                      <select
+                        value={t.service_mode}
+                        onChange={(e) => handleUpdateServiceMode(t.id, e.target.value as ServiceMode)}
+                        className="text-[10px] tracking-wider uppercase px-2 py-1 bg-background border border-border text-foreground focus:outline-none focus:border-primary"
+                      >
+                        <option value="both">Walk-In & Mobile</option>
+                        <option value="walk_in">Walk-In Only</option>
+                        <option value="mobile">Mobile Only</option>
+                      </select>
                     </div>
                   </div>
                   <div className="flex items-center gap-3 flex-shrink-0">
@@ -313,14 +380,15 @@ const AdminDashboard = () => {
                       />
                       <div className="w-9 h-5 bg-muted rounded-full peer peer-checked:bg-primary transition-colors after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-background after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-full"></div>
                     </label>
-                    <label className="cursor-pointer">
+                    <label className="cursor-pointer" title="Add photos">
                       <input
                         type="file"
                         accept="image/*"
+                        multiple
                         className="hidden"
                         onChange={(e) => {
-                          const file = e.target.files?.[0];
-                          if (file) handleUpdatePhoto(t.id, file);
+                          const files = Array.from(e.target.files ?? []);
+                          if (files.length) handleAddPhotos(t.id, files);
                         }}
                       />
                       <Upload size={16} className="text-muted-foreground hover:text-foreground" />
@@ -331,6 +399,7 @@ const AdminDashboard = () => {
                   </div>
                 </div>
               ))}
+
               {therapists.length === 0 && (
                 <p className="text-sm text-muted-foreground text-center py-8">No therapists added yet.</p>
               )}
