@@ -17,7 +17,7 @@ interface Therapist {
   name: string;
   specialties: string[];
   photo_url: string | null;
-  photo_urls: string[];
+  photo_url: string[];
   available: boolean;
   service_mode: ServiceMode;
 }
@@ -126,7 +126,7 @@ const AdminDashboard = () => {
       name: formName,
       specialties: formSpecialties.split(",").map((s) => s.trim()).filter(Boolean),
       photo_url: photoUrls[0] ?? null,
-      photo_urls: photoUrls,
+      photo_url: photoUrls,
       service_mode: formServiceMode,
     });
 
@@ -149,13 +149,13 @@ const AdminDashboard = () => {
     if (newUrls.length === 0) return;
 
     const therapist = therapists.find((t) => t.id === therapistId);
-    const existing = therapist?.photo_urls ?? [];
+    const existing = therapist?.photo_url ?? [];
     const merged = [...existing, ...newUrls];
 
     const { error } = await supabase
       .from("therapists")
       .update({
-        photo_urls: merged,
+        photo_url: merged,
         photo_url: therapist?.photo_url ?? merged[0],
       })
       .eq("id", therapistId);
@@ -345,9 +345,9 @@ const AdminDashboard = () => {
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-muted-foreground text-xs">No photo</div>
                     )}
-                    {t.photo_urls && t.photo_urls.length > 1 && (
+                    {t.photo_url && t.photo_url.length > 1 && (
                       <span className="absolute bottom-0 right-0 text-[10px] bg-primary text-primary-foreground px-1.5">
-                        +{t.photo_urls.length - 1}
+                        +{t.photo_url.length - 1}
                       </span>
                     )}
                   </div>
