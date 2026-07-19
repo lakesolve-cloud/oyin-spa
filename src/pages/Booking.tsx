@@ -46,6 +46,7 @@ interface TherapistData {
   specialties: string[];
   available: boolean;
   photo_url: string[] | null;
+  service_mode: "walk_in" | "mobile" | "both";
   photo?: string; // local fallback asset for the seed/demo therapists
 }
 
@@ -138,6 +139,7 @@ const fallbackTherapists: TherapistData[] = [
     specialties: ["Deep Tissue", "Sports Recovery"],
     available: true,
     photo_url: null,
+    service_mode: "both",
     photo: therapistAmara,
   },
   {
@@ -146,6 +148,7 @@ const fallbackTherapists: TherapistData[] = [
     specialties: ["Relaxation", "Aromatherapy"],
     available: true,
     photo_url: null,
+    service_mode: "both",
     photo: therapistChidera,
   },
   {
@@ -154,6 +157,7 @@ const fallbackTherapists: TherapistData[] = [
     specialties: ["Prenatal", "Relaxation"],
     available: true,
     photo_url: null,
+    service_mode: "both",
     photo: therapistFolake,
   },
   {
@@ -162,6 +166,7 @@ const fallbackTherapists: TherapistData[] = [
     specialties: ["Deep Tissue", "Hot Stone"],
     available: false,
     photo_url: null,
+    service_mode: "both",
     photo: therapistBisi,
   },
   {
@@ -170,6 +175,7 @@ const fallbackTherapists: TherapistData[] = [
     specialties: ["Couples", "Executive"],
     available: true,
     photo_url: null,
+    service_mode: "both",
     photo: therapistNneka,
   },
 ];
@@ -221,7 +227,12 @@ const Booking = () => {
   );
 
   const currentService = activeBookable.find((s) => s.id === selectedServiceId);
-  const availableTherapists = therapists.filter((t) => t.available);
+  const availableTherapists = therapists.filter((t) => {
+    if (!t.available) return false;
+    if (t.service_mode === "both") return true;
+    if (selectedLocation === "mobile") return t.service_mode === "mobile";
+    return t.service_mode === "walk_in";
+  });
   const selectedTherapistData = therapists.find(
     (t) => t.id === selectedTherapist,
   );
