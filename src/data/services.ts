@@ -219,7 +219,7 @@ export const massageServices: MassageService[] = [
     ],
   },
   {
-    name: "Nuru Signature",
+    name: "Nu-ru Signature",
     items: [
       { duration: "60 mins", price: "₦80,000" },
       { duration: "90 mins", price: "₦120,000" },
@@ -255,7 +255,7 @@ export const massageServices: MassageService[] = [
     ],
   },
   {
-    name: "Couples Nuru Signature",
+    name: "Couples Nu-ru Signature",
     items: [
       { duration: "60 mins", price: "₦200,000" },
       { duration: "90 mins", price: "₦300,000" },
@@ -264,7 +264,7 @@ export const massageServices: MassageService[] = [
     ],
   },
   {
-    name: "Four Hand Nuru Signature",
+    name: "Four Hand Nu-ru Signature",
     items: [
       { duration: "60 mins", price: "₦200,000" },
       { duration: "90 mins", price: "₦300,000" },
@@ -273,7 +273,7 @@ export const massageServices: MassageService[] = [
     ],
   },
   {
-    name: "Swedish Nuru Signature",
+    name: "Swedish Nu-ru Signature",
     items: [
       { duration: "60 mins", price: "₦90,000" },
       { duration: "90 mins", price: "₦140,000" },
@@ -282,7 +282,7 @@ export const massageServices: MassageService[] = [
     ],
   },
   {
-    name: "Deep Tissue Nuru Signature",
+    name: "Deep Tissue Nu-ru Signature",
     items: [
       { duration: "60 mins", price: "₦100,000" },
       { duration: "90 mins", price: "₦150,000" },
@@ -322,7 +322,7 @@ export const mobileMassageServices: MassageService[] = [
     ],
   },
   {
-    name: "Nuru Signature",
+    name: "Nu-ru Signature",
     items: [
       { duration: "60 mins", price: "₦100,000" },
       { duration: "90 mins", price: "₦150,000" },
@@ -349,7 +349,7 @@ export const mobileMassageServices: MassageService[] = [
     ],
   },
   {
-    name: "Couples Nuru Signature",
+    name: "Couples Nu-ru Signature",
     items: [
       { duration: "60 mins", price: "₦250,000" },
       { duration: "90 mins", price: "₦375,000" },
@@ -358,7 +358,7 @@ export const mobileMassageServices: MassageService[] = [
     ],
   },
   {
-    name: "Four Hand Nuru Signature",
+    name: "Four Hand Nu-ru Signature",
     items: [
       { duration: "60 mins", price: "₦250,000" },
       { duration: "90 mins", price: "₦375,000" },
@@ -367,7 +367,7 @@ export const mobileMassageServices: MassageService[] = [
     ],
   },
   {
-    name: "Swedish Nuru Signature",
+    name: "Swedish Nu-ru Signature",
     items: [
       { duration: "60 mins", price: "₦120,000" },
       { duration: "90 mins", price: "₦180,000" },
@@ -376,7 +376,7 @@ export const mobileMassageServices: MassageService[] = [
     ],
   },
   {
-    name: "Deep Tissue Nuru Signature",
+    name: "Deep Tissue Nu-ru Signature",
     items: [
       { duration: "60 mins", price: "₦150,000" },
       { duration: "90 mins", price: "₦230,000" },
