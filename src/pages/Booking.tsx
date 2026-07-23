@@ -1,16 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  ArrowRight,
-  ArrowLeft,
-  Check,
-  MapPin,
-  Clock,
-  Calendar,
-  ChevronDown,
-  ChevronLeft,
-  X,
-} from "lucide-react";
+import { ArrowRight, ArrowLeft, Check, MapPin, Clock, Calendar, ChevronDown, X } from "lucide-react";
 import Layout from "@/components/Layout";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { fadeUp } from "@/lib/animations";
@@ -40,20 +30,10 @@ interface BookableService {
   duration?: string;
 }
 
-interface TherapistData {
-  id: string;
-  name: string;
-  specialties: string[];
-  available: boolean;
-  photo_url: string[] | null;
-  service_mode: "walk_in" | "mobile" | "both";
-  photo?: string; // local fallback asset for the seed/demo therapists
-}
-
 function buildBookableList(
   spa: typeof spaServices,
   massage: typeof massageServices,
-  quick: typeof quickMassages,
+  quick: typeof quickMassages
 ): BookableService[] {
   const list: BookableService[] = [];
 
@@ -71,9 +51,7 @@ function buildBookableList(
   massage.forEach((service) => {
     service.items.forEach((item) => {
       list.push({
-        id: `massage--${service.name}--${item.duration}`
-          .toLowerCase()
-          .replace(/\s+/g, "-"),
+        id: `massage--${service.name}--${item.duration}`.toLowerCase().replace(/\s+/g, "-"),
         category: "Massage",
         name: `${service.name} — ${item.duration}`,
         price: item.price,
@@ -94,28 +72,8 @@ function buildBookableList(
   return list;
 }
 
-// Returns the full set of viewable photos for a therapist, falling back to
-// the local demo asset when no uploaded photos exist.
-function getTherapistPhotos(therapist: TherapistData): string[] {
-  if (therapist.photo_url && therapist.photo_url.length > 0) {
-    return therapist.photo_url;
-  }
-  if (therapist.photo) {
-    return [therapist.photo];
-  }
-  return [];
-}
-
-const inSpaBookable = buildBookableList(
-  spaServices,
-  massageServices,
-  quickMassages,
-);
-const mobileBookable = buildBookableList(
-  mobileSpaServices,
-  mobileMassageServices,
-  mobileQuickMassages,
-);
+const inSpaBookable = buildBookableList(spaServices, massageServices, quickMassages);
+const mobileBookable = buildBookableList(mobileSpaServices, mobileMassageServices, mobileQuickMassages);
 
 const locationOptions = [
   { id: "in-spa", label: "Walk-In", desc: "Visit our studio" },
@@ -123,61 +81,19 @@ const locationOptions = [
 ];
 
 const timeSlots = Array.from({ length: 48 }, (_, i) => {
-  const h = Math.floor(i / 2)
-    .toString()
-    .padStart(2, "0");
+  const h = Math.floor(i / 2).toString().padStart(2, "0");
   const m = i % 2 === 0 ? "00" : "30";
   return `${h}:${m}`;
 });
 
 const THERAPIST_CATEGORIES = new Set(["Massage", "Body Waxing"]);
 
-const fallbackTherapists: TherapistData[] = [
-  {
-    id: "1",
-    name: "Amara",
-    specialties: ["Deep Tissue", "Sports Recovery"],
-    available: true,
-    photo_url: null,
-    service_mode: "both",
-    photo: therapistAmara,
-  },
-  {
-    id: "2",
-    name: "Chidera",
-    specialties: ["Relaxation", "Aromatherapy"],
-    available: true,
-    photo_url: null,
-    service_mode: "both",
-    photo: therapistChidera,
-  },
-  {
-    id: "3",
-    name: "Folake",
-    specialties: ["Prenatal", "Relaxation"],
-    available: true,
-    photo_url: null,
-    service_mode: "both",
-    photo: therapistFolake,
-  },
-  {
-    id: "4",
-    name: "Bisi",
-    specialties: ["Deep Tissue", "Hot Stone"],
-    available: false,
-    photo_url: null,
-    service_mode: "both",
-    photo: therapistBisi,
-  },
-  {
-    id: "5",
-    name: "Nneka",
-    specialties: ["Couples", "Executive"],
-    available: true,
-    photo_url: null,
-    service_mode: "both",
-    photo: therapistNneka,
-  },
+const fallbackTherapists = [
+  { id: "1", name: "Amara", specialties: ["Deep Tissue", "Sports Recovery"], available: true, photo_url: null, photo: therapistAmara, photo_urls: [] as string[], service_mode: "both" as const },
+  { id: "2", name: "Chidera", specialties: ["Relaxation", "Aromatherapy"], available: true, photo_url: null, photo: therapistChidera, photo_urls: [] as string[], service_mode: "both" as const },
+  { id: "3", name: "Folake", specialties: ["Prenatal", "Relaxation"], available: true, photo_url: null, photo: therapistFolake, photo_urls: [] as string[], service_mode: "both" as const },
+  { id: "4", name: "Bisi", specialties: ["Deep Tissue", "Hot Stone"], available: false, photo_url: null, photo: therapistBisi, photo_urls: [] as string[], service_mode: "both" as const },
+  { id: "5", name: "Nneka", specialties: ["Couples", "Executive"], available: true, photo_url: null, photo: therapistNneka, photo_urls: [] as string[], service_mode: "both" as const },
 ];
 
 const Booking = () => {
@@ -187,25 +103,17 @@ const Booking = () => {
   const [selectedLocation, setSelectedLocation] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
-  const [selectedTherapist, setSelectedTherapist] = useState<string | null>(
-    null,
-  );
-  const [therapists, setTherapists] =
-    useState<TherapistData[]>(fallbackTherapists);
+  const [selectedTherapist, setSelectedTherapist] = useState<string | null>(null);
+  const [therapists, setTherapists] = useState<any[]>(fallbackTherapists);
   const [addHotStone, setAddHotStone] = useState(false);
-  const [galleryTherapistId, setGalleryTherapistId] = useState<string | null>(
-    null,
-  );
+  const [galleryTherapistId, setGalleryTherapistId] = useState<string | null>(null);
   const [galleryIndex, setGalleryIndex] = useState(0);
 
   useEffect(() => {
     const fetchTherapists = async () => {
-      const { data } = await supabase
-        .from("therapists")
-        .select("*")
-        .order("created_at");
+      const { data } = await supabase.from("therapists").select("*").order("created_at");
       if (data && data.length > 0) {
-        setTherapists(data as TherapistData[]);
+        setTherapists(data.map((t: any) => ({ ...t, photo: t.photo_url || "" })));
       }
     };
     fetchTherapists();
@@ -213,72 +121,46 @@ const Booking = () => {
 
   const activeBookable = useMemo(
     () => (selectedLocation === "mobile" ? mobileBookable : inSpaBookable),
-    [selectedLocation],
+    [selectedLocation]
   );
 
   const activeCategories = useMemo(
     () => [...new Set(activeBookable.map((s) => s.category))],
-    [activeBookable],
+    [activeBookable]
   );
 
   const filteredServices = useMemo(
     () => activeBookable.filter((s) => s.category === selectedCategory),
-    [activeBookable, selectedCategory],
+    [activeBookable, selectedCategory]
   );
 
   const currentService = activeBookable.find((s) => s.id === selectedServiceId);
   const availableTherapists = therapists.filter((t) => {
     if (!t.available) return false;
-    if (t.service_mode === "both") return true;
-    if (selectedLocation === "mobile") return t.service_mode === "mobile";
-    return t.service_mode === "walk_in";
+    const mode = t.service_mode ?? "both";
+    if (mode === "both") return true;
+    if (selectedLocation === "mobile") return mode === "mobile";
+    if (selectedLocation === "in-spa") return mode === "walk_in";
+    return true;
   });
-  const selectedTherapistData = therapists.find(
-    (t) => t.id === selectedTherapist,
-  );
+  const selectedTherapistData = therapists.find((t) => t.id === selectedTherapist);
   const isMassageCategory = selectedCategory === "Massage";
   const requiresTherapist = THERAPIST_CATEGORIES.has(selectedCategory);
-  const hotStonePrice =
-    selectedLocation === "mobile"
-      ? mobileMassageAddOns[0].price
-      : massageAddOns[0].price;
+  const hotStonePrice = selectedLocation === "mobile" ? mobileMassageAddOns[0].price : massageAddOns[0].price;
   const galleryTherapist = therapists.find((t) => t.id === galleryTherapistId);
-  const galleryPhotos = galleryTherapist
-    ? getTherapistPhotos(galleryTherapist)
+  const galleryPhotos: string[] = galleryTherapist
+    ? ((galleryTherapist.photo_urls && galleryTherapist.photo_urls.length > 0)
+        ? galleryTherapist.photo_urls
+        : [galleryTherapist.photo_url || galleryTherapist.photo].filter(Boolean))
     : [];
 
-  const openGallery = (therapistId: string) => {
-    setGalleryTherapistId(therapistId);
-    setGalleryIndex(0);
-  };
-
-  const closeGallery = () => {
-    setGalleryTherapistId(null);
-    setGalleryIndex(0);
-  };
-
-  const nextGalleryPhoto = () => {
-    if (galleryPhotos.length === 0) return;
-    setGalleryIndex((i) => (i + 1) % galleryPhotos.length);
-  };
-
-  const prevGalleryPhoto = () => {
-    if (galleryPhotos.length === 0) return;
-    setGalleryIndex(
-      (i) => (i - 1 + galleryPhotos.length) % galleryPhotos.length,
-    );
-  };
 
   const canProceed = () => {
     switch (step) {
-      case 1:
-        return selectedServiceId && selectedLocation;
-      case 2:
-        return selectedDate && selectedTime;
-      case 3:
-        return selectedTherapist !== null;
-      default:
-        return false;
+      case 1: return selectedServiceId && selectedLocation;
+      case 2: return selectedDate && selectedTime;
+      case 3: return selectedTherapist !== null;
+      default: return false;
     }
   };
 
@@ -308,49 +190,29 @@ const Booking = () => {
       <section className="py-24 lg:py-32">
         <div className="container mx-auto px-6 lg:px-12 max-w-3xl">
           {/* Header */}
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            className="text-center mb-16"
-          >
-            <motion.p
-              custom={0}
-              variants={fadeUp}
-              className="text-xs tracking-[0.3em] uppercase text-muted-foreground mb-4"
-            >
+          <motion.div initial="hidden" animate="visible" className="text-center mb-16">
+            <motion.p custom={0} variants={fadeUp} className="text-xs tracking-[0.3em] uppercase text-muted-foreground mb-4">
               Book Your Experience
             </motion.p>
-            <motion.h1
-              custom={1}
-              variants={fadeUp}
-              className="font-serif text-3xl md:text-5xl text-foreground"
-            >
+            <motion.h1 custom={1} variants={fadeUp} className="font-serif text-3xl md:text-5xl text-foreground">
               Reserve Your Session
             </motion.h1>
           </motion.div>
 
           {/* Progress */}
           <div className="flex items-center justify-center gap-3 mb-16">
-            {(requiresTherapist ? [1, 2, 3, 4] : [1, 2, 4]).map(
-              (s, idx, arr) => (
-                <div key={s} className="flex items-center gap-3">
-                  <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center text-xs transition-colors ${
-                      step >= s
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-muted text-muted-foreground"
-                    }`}
-                  >
-                    {step > s ? <Check size={14} /> : idx + 1}
-                  </div>
-                  {idx < arr.length - 1 && (
-                    <div
-                      className={`w-8 h-px ${step > s ? "bg-primary" : "bg-border"}`}
-                    />
-                  )}
+            {(requiresTherapist ? [1, 2, 3, 4] : [1, 2, 4]).map((s, idx, arr) => (
+              <div key={s} className="flex items-center gap-3">
+                <div
+                  className={`w-8 h-8 rounded-full flex items-center justify-center text-xs transition-colors ${
+                    step >= s ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
+                  }`}
+                >
+                  {step > s ? <Check size={14} /> : idx + 1}
                 </div>
-              ),
-            )}
+                {idx < arr.length - 1 && <div className={`w-8 h-px ${step > s ? "bg-primary" : "bg-border"}`} />}
+              </div>
+            ))}
           </div>
 
           <AnimatePresence mode="wait">
@@ -364,9 +226,7 @@ const Booking = () => {
                 transition={{ duration: 0.4 }}
               >
                 {/* Location Selection (first) */}
-                <h2 className="font-serif text-xl mb-6 text-foreground">
-                  Select Location
-                </h2>
+                <h2 className="font-serif text-xl mb-6 text-foreground">Select Location</h2>
                 <div className="grid grid-cols-2 gap-4 mb-10">
                   {locationOptions.map((loc) => (
                     <button
@@ -384,12 +244,8 @@ const Booking = () => {
                       }`}
                     >
                       <MapPin className="w-5 h-5 mx-auto mb-2 text-accent" />
-                      <span className="block text-sm font-medium text-foreground">
-                        {loc.label}
-                      </span>
-                      <span className="block text-xs text-muted-foreground mt-1">
-                        {loc.desc}
-                      </span>
+                      <span className="block text-sm font-medium text-foreground">{loc.label}</span>
+                      <span className="block text-xs text-muted-foreground mt-1">{loc.desc}</span>
                     </button>
                   ))}
                 </div>
@@ -397,9 +253,7 @@ const Booking = () => {
                 {/* Category Selection */}
                 {selectedLocation && (
                   <>
-                    <h3 className="font-serif text-lg mb-4 text-foreground">
-                      Select Category
-                    </h3>
+                    <h3 className="font-serif text-lg mb-4 text-foreground">Select Category</h3>
                     <div className="flex flex-wrap gap-2 mb-10">
                       {activeCategories.map((cat) => (
                         <button
@@ -425,9 +279,7 @@ const Booking = () => {
                 {/* Service Selection */}
                 {selectedCategory && (
                   <>
-                    <h3 className="font-serif text-lg mb-4 text-foreground">
-                      Select Service
-                    </h3>
+                    <h3 className="font-serif text-lg mb-4 text-foreground">Select Service</h3>
                     <div className="space-y-2 mb-10 max-h-[320px] overflow-y-auto pr-1">
                       {filteredServices.map((service) => (
                         <button
@@ -439,12 +291,8 @@ const Booking = () => {
                               : "border-border hover:border-accent"
                           }`}
                         >
-                          <span className="text-sm text-foreground">
-                            {service.name}
-                          </span>
-                          <span className="text-sm font-medium text-foreground whitespace-nowrap">
-                            {service.price}
-                          </span>
+                          <span className="text-sm text-foreground">{service.name}</span>
+                          <span className="text-sm font-medium text-foreground whitespace-nowrap">{service.price}</span>
                         </button>
                       ))}
                     </div>
@@ -454,9 +302,7 @@ const Booking = () => {
                 {/* Hot Stone Add-on for massage */}
                 {selectedServiceId && isMassageCategory && (
                   <div className="mb-10">
-                    <h3 className="font-serif text-lg mb-4 text-foreground">
-                      Add-Ons
-                    </h3>
+                    <h3 className="font-serif text-lg mb-4 text-foreground">Add-Ons</h3>
                     <button
                       onClick={() => setAddHotStone(!addHotStone)}
                       className={`w-full text-left px-5 py-4 border transition-colors flex justify-between items-center gap-4 ${
@@ -465,12 +311,8 @@ const Booking = () => {
                           : "border-border hover:border-accent"
                       }`}
                     >
-                      <span className="text-sm text-foreground">
-                        Hot Stone Add-On
-                      </span>
-                      <span className="text-sm font-medium text-foreground">
-                        {hotStonePrice}
-                      </span>
+                      <span className="text-sm text-foreground">Hot Stone Add-On</span>
+                      <span className="text-sm font-medium text-foreground">{hotStonePrice}</span>
                     </button>
                   </div>
                 )}
@@ -486,9 +328,7 @@ const Booking = () => {
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.4 }}
               >
-                <h2 className="font-serif text-xl mb-8 text-foreground">
-                  Choose Date & Time
-                </h2>
+                <h2 className="font-serif text-xl mb-8 text-foreground">Choose Date & Time</h2>
 
                 <h3 className="font-serif text-lg mb-4 text-foreground flex items-center gap-2">
                   <Calendar size={16} /> Available Dates
@@ -496,13 +336,9 @@ const Booking = () => {
                 <div className="grid grid-cols-4 sm:grid-cols-7 gap-2 mb-10">
                   {dates.map((d) => {
                     const key = d.toISOString().split("T")[0];
-                    const day = d.toLocaleDateString("en-US", {
-                      weekday: "short",
-                    });
+                    const day = d.toLocaleDateString("en-US", { weekday: "short" });
                     const num = d.getDate();
-                    const month = d.toLocaleDateString("en-US", {
-                      month: "short",
-                    });
+                    const month = d.toLocaleDateString("en-US", { month: "short" });
                     return (
                       <button
                         key={key}
@@ -513,15 +349,9 @@ const Booking = () => {
                             : "border-border hover:border-accent"
                         }`}
                       >
-                        <span className="block text-[10px] uppercase text-muted-foreground">
-                          {day}
-                        </span>
-                        <span className="block text-lg font-serif text-foreground">
-                          {num}
-                        </span>
-                        <span className="block text-[10px] text-muted-foreground">
-                          {month}
-                        </span>
+                        <span className="block text-[10px] uppercase text-muted-foreground">{day}</span>
+                        <span className="block text-lg font-serif text-foreground">{num}</span>
+                        <span className="block text-[10px] text-muted-foreground">{month}</span>
                       </button>
                     );
                   })}
@@ -561,85 +391,63 @@ const Booking = () => {
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.4 }}
               >
-                <h2 className="font-serif text-xl mb-2 text-foreground">
-                  Select Your Therapist
-                </h2>
+                <h2 className="font-serif text-xl mb-2 text-foreground">Select Your Therapist</h2>
                 <p className="text-sm text-muted-foreground mb-8">
-                  Available therapists qualified for your selected service and
-                  time.
+                  Available therapists qualified for your selected service and time.
                 </p>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                  {availableTherapists.map((therapist) => {
-                    const photos = getTherapistPhotos(therapist);
-                    return (
-                      <div
-                        key={therapist.id}
-                        className={`text-left border transition-all overflow-hidden ${
-                          selectedTherapist === therapist.id
-                            ? "border-primary ring-1 ring-primary"
-                            : "border-border hover:border-accent"
-                        }`}
+                  {availableTherapists.map((therapist) => (
+                    <div
+                      key={therapist.id}
+                      className={`text-left border transition-all overflow-hidden ${
+                        selectedTherapist === therapist.id
+                          ? "border-primary ring-1 ring-primary"
+                          : "border-border hover:border-accent"
+                      }`}
+                    >
+                      <button
+                        type="button"
+                        onClick={() => setGalleryTherapistId(therapist.id)}
+                        className="block w-full aspect-[4/3] overflow-hidden bg-muted group relative"
+                        aria-label={`View ${therapist.name} photo`}
                       >
-                        <button
-                          type="button"
-                          onClick={() => openGallery(therapist.id)}
-                          className="block w-full aspect-[4/3] overflow-hidden bg-muted group relative"
-                          aria-label={`View ${therapist.name} photos`}
-                        >
-                          {photos.length > 0 ? (
-                            <img
-                              src={photos[0]}
-                              alt={therapist.name}
-                              className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
-                            />
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center text-muted-foreground font-serif text-2xl">
-                              {therapist.name[0]}
-                            </div>
-                          )}
-                          {photos.length > 1 && (
-                            <span className="absolute bottom-2 left-2 text-[10px] tracking-[0.1em] uppercase bg-background/80 text-foreground px-2 py-1">
-                              +{photos.length - 1} more
-                            </span>
-                          )}
-                          <span className="absolute bottom-2 right-2 text-[10px] tracking-[0.15em] uppercase bg-background/80 text-foreground px-2 py-1">
-                            View
-                          </span>
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setSelectedTherapist(therapist.id)}
-                          className="w-full text-left p-5"
-                        >
-                          <h3 className="font-serif text-lg text-foreground">
-                            {therapist.name}
-                          </h3>
-                          <div className="flex flex-wrap gap-2 mt-2">
-                            {therapist.specialties.map((s) => (
-                              <span
-                                key={s}
-                                className="text-[10px] tracking-[0.1em] uppercase px-2 py-1 bg-muted text-muted-foreground"
-                              >
-                                {s}
-                              </span>
-                            ))}
+                        {(therapist.photo_url || therapist.photo) ? (
+                          <img
+                            src={therapist.photo_url || therapist.photo}
+                            alt={therapist.name}
+                            className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-muted-foreground font-serif text-2xl">
+                            {therapist.name[0]}
                           </div>
-                          <span
-                            className={`mt-4 inline-block text-[10px] tracking-[0.2em] uppercase ${
-                              selectedTherapist === therapist.id
-                                ? "text-primary"
-                                : "text-muted-foreground"
-                            }`}
-                          >
-                            {selectedTherapist === therapist.id
-                              ? "Selected"
-                              : "Tap to select"}
-                          </span>
-                        </button>
-                      </div>
-                    );
-                  })}
+                        )}
+                        <span className="absolute bottom-2 right-2 text-[10px] tracking-[0.15em] uppercase bg-background/80 text-foreground px-2 py-1">
+                          View
+                        </span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedTherapist(therapist.id)}
+                        className="w-full text-left p-5"
+                      >
+                        <h3 className="font-serif text-lg text-foreground">{therapist.name}</h3>
+                        <div className="flex flex-wrap gap-2 mt-2">
+                          {therapist.specialties.map((s) => (
+                            <span key={s} className="text-[10px] tracking-[0.1em] uppercase px-2 py-1 bg-muted text-muted-foreground">
+                              {s}
+                            </span>
+                          ))}
+                        </div>
+                        <span className={`mt-4 inline-block text-[10px] tracking-[0.2em] uppercase ${
+                          selectedTherapist === therapist.id ? "text-primary" : "text-muted-foreground"
+                        }`}>
+                          {selectedTherapist === therapist.id ? "Selected" : "Tap to select"}
+                        </span>
+                      </button>
+                    </div>
+                  ))}
                 </div>
               </motion.div>
             )}
@@ -653,121 +461,86 @@ const Booking = () => {
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.4 }}
               >
-                <h2 className="font-serif text-xl mb-8 text-foreground">
-                  Booking Summary
-                </h2>
+                <h2 className="font-serif text-xl mb-8 text-foreground">Booking Summary</h2>
 
                 <div className="border border-border divide-y divide-border mb-10">
                   <div className="p-6 flex justify-between">
-                    <span className="text-sm text-muted-foreground">
-                      Category
-                    </span>
+                    <span className="text-sm text-muted-foreground">Category</span>
+                    <span className="text-sm text-foreground">{selectedCategory}</span>
+                  </div>
+                  <div className="p-6 flex justify-between">
+                    <span className="text-sm text-muted-foreground">Service</span>
+                    <span className="text-sm text-foreground">{currentService?.name}</span>
+                  </div>
+                  <div className="p-6 flex justify-between">
+                    <span className="text-sm text-muted-foreground">Location</span>
                     <span className="text-sm text-foreground">
-                      {selectedCategory}
+                      {locationOptions.find((l) => l.id === selectedLocation)?.label}
                     </span>
                   </div>
                   <div className="p-6 flex justify-between">
-                    <span className="text-sm text-muted-foreground">
-                      Service
-                    </span>
-                    <span className="text-sm text-foreground">
-                      {currentService?.name}
-                    </span>
-                  </div>
-                  <div className="p-6 flex justify-between">
-                    <span className="text-sm text-muted-foreground">
-                      Location
-                    </span>
-                    <span className="text-sm text-foreground">
-                      {
-                        locationOptions.find((l) => l.id === selectedLocation)
-                          ?.label
-                      }
-                    </span>
-                  </div>
-                  <div className="p-6 flex justify-between">
-                    <span className="text-sm text-muted-foreground">
-                      Date & Time
-                    </span>
-                    <span className="text-sm text-foreground">
-                      {selectedDate} at {selectedTime}
-                    </span>
+                    <span className="text-sm text-muted-foreground">Date & Time</span>
+                    <span className="text-sm text-foreground">{selectedDate} at {selectedTime}</span>
                   </div>
                   {requiresTherapist && (
                     <div className="p-6 flex justify-between">
-                      <span className="text-sm text-muted-foreground">
-                        Therapist
-                      </span>
-                      <span className="text-sm text-foreground">
-                        {selectedTherapistData?.name}
-                      </span>
+                      <span className="text-sm text-muted-foreground">Therapist</span>
+                      <span className="text-sm text-foreground">{selectedTherapistData?.name}</span>
                     </div>
                   )}
                   {addHotStone && (
                     <div className="p-6 flex justify-between">
-                      <span className="text-sm text-muted-foreground">
-                        Add-On: Hot Stone
-                      </span>
-                      <span className="text-sm font-medium text-foreground">
-                        {hotStonePrice}
-                      </span>
+                      <span className="text-sm text-muted-foreground">Add-On: Hot Stone</span>
+                      <span className="text-sm font-medium text-foreground">{hotStonePrice}</span>
                     </div>
                   )}
                   <div className="p-6 flex justify-between">
                     <span className="text-sm text-muted-foreground">Price</span>
                     <span className="text-sm font-medium text-foreground">
-                      {currentService?.price}
-                      {addHotStone ? ` + ${hotStonePrice}` : ""}
+                      {currentService?.price}{addHotStone ? ` + ${hotStonePrice}` : ""}
                     </span>
                   </div>
-                  <div className="p-6 flex justify-between bg-secondary">
-                    <span className="text-sm text-foreground font-medium">
-                      Deposit Required
-                    </span>
-                    <span className="text-sm font-medium text-foreground">
-                      ₦15,000
-                    </span>
-                  </div>
+                  {(() => {
+                    const parsePrice = (p?: string) => Number((p || "").replace(/[^\d.]/g, "")) || 0;
+                    const total = parsePrice(currentService?.price) + (addHotStone ? parsePrice(hotStonePrice) : 0);
+                    const deposit = Math.round(total * 0.3);
+                    const formatted = `₦${deposit.toLocaleString()}`;
+                    return (
+                      <div className="p-6 flex justify-between bg-secondary">
+                        <span className="text-sm text-foreground font-medium">Deposit Required (30%)</span>
+                        <span className="text-sm font-medium text-foreground">{formatted}</span>
+                      </div>
+                    );
+                  })()}
                 </div>
 
                 {/* Policies */}
                 <div className="bg-card border border-border p-6 mb-10">
-                  <h3 className="font-serif text-base mb-3 text-foreground">
-                    Important Policies
-                  </h3>
+                  <h3 className="font-serif text-base mb-3 text-foreground">Important Policies</h3>
                   <ul className="space-y-2">
-                    <li className="text-xs text-muted-foreground">
-                      • A non-refundable deposit of ₦15,000 is required to
-                      confirm your booking.
-                    </li>
-                    <li className="text-xs text-muted-foreground">
-                      • Rescheduling requires a minimum of 6 hours' notice.
-                    </li>
-                    <li className="text-xs text-muted-foreground">
-                      • Late arrivals may result in a shortened session.
-                    </li>
-                    <li className="text-xs text-muted-foreground">
-                      • Balance is due at the start of your session.
-                    </li>
+                    <li className="text-xs text-muted-foreground">• A non-refundable deposit of 30% of your total service charge is required to confirm your booking.</li>
+                    <li className="text-xs text-muted-foreground">• Rescheduling requires a minimum of 6 hours' notice.</li>
+                    <li className="text-xs text-muted-foreground">• Late arrivals may result in a shortened session.</li>
+                    <li className="text-xs text-muted-foreground">• Balance is due at the start of your session.</li>
                   </ul>
                 </div>
 
                 <button
                   className="w-full py-4 text-xs tracking-[0.2em] uppercase bg-primary text-primary-foreground hover:bg-warm-taupe transition-colors duration-300"
                   onClick={() => {
-                    const therapistLine = requiresTherapist
-                      ? `\nTherapist: ${selectedTherapistData?.name}`
-                      : "";
-                    const msg = `Hello, I'd like to confirm my booking:\n\nCategory: ${selectedCategory}\nService: ${currentService?.name}\nPrice: ${currentService?.price}${addHotStone ? ` + ${hotStonePrice} (Hot Stone)` : ""}\nLocation: ${locationOptions.find((l) => l.id === selectedLocation)?.label}\nDate: ${selectedDate}\nTime: ${selectedTime}${therapistLine}\nDeposit Required:  ₦15,000\n\nI'm ready to pay the deposit.`;
-                    window.open(
-                      "https://wa.me/2347033948417?text=" +
-                        encodeURIComponent(msg),
-                      "_blank",
-                    );
+                    const parsePrice = (p?: string) => Number((p || "").replace(/[^\d.]/g, "")) || 0;
+                    const total = parsePrice(currentService?.price) + (addHotStone ? parsePrice(hotStonePrice) : 0);
+                    const deposit = Math.round(total * 0.3);
+                    const depositFmt = `₦${deposit.toLocaleString()}`;
+                    const totalFmt = `₦${total.toLocaleString()}`;
+                    const therapistLine = requiresTherapist ? `\nTherapist: ${selectedTherapistData?.name}` : "";
+                    const msg = `Hello, I'd like to confirm my booking:\n\nCategory: ${selectedCategory}\nService: ${currentService?.name}\nPrice: ${currentService?.price}${addHotStone ? ` + ${hotStonePrice} (Hot Stone)` : ""}\nTotal: ${totalFmt}\nDeposit (30%): ${depositFmt}\nLocation: ${locationOptions.find(l => l.id === selectedLocation)?.label}\nDate: ${selectedDate}\nTime: ${selectedTime}${therapistLine}\n\nI'm ready to pay the ${depositFmt} deposit.`;
+                    window.open("https://wa.me/2347033948417?text=" + encodeURIComponent(msg), "_blank");
                   }}
                 >
                   Confirm & Pay Deposit via WhatsApp
                 </button>
+
               </motion.div>
             )}
           </AnimatePresence>
@@ -781,9 +554,7 @@ const Booking = () => {
               >
                 <ArrowLeft size={14} /> Back
               </button>
-            ) : (
-              <div />
-            )}
+            ) : <div />}
             {step < 4 && (
               <button
                 onClick={goNext}
@@ -804,7 +575,12 @@ const Booking = () => {
       {/* Therapist Gallery Dialog */}
       <Dialog
         open={!!galleryTherapistId}
-        onOpenChange={(o) => !o && closeGallery()}
+        onOpenChange={(o) => {
+          if (!o) {
+            setGalleryTherapistId(null);
+            setGalleryIndex(0);
+          }
+        }}
       >
         <DialogContent className="max-w-3xl p-0 overflow-hidden bg-background border-border">
           {galleryTherapist && (
@@ -812,8 +588,8 @@ const Booking = () => {
               <div className="bg-muted relative">
                 {galleryPhotos.length > 0 ? (
                   <img
-                    src={galleryPhotos[galleryIndex]}
-                    alt={`${galleryTherapist.name} photo ${galleryIndex + 1}`}
+                    src={galleryPhotos[Math.min(galleryIndex, galleryPhotos.length - 1)]}
+                    alt={galleryTherapist.name}
                     className="w-full max-h-[75vh] object-contain"
                   />
                 ) : (
@@ -821,54 +597,49 @@ const Booking = () => {
                     {galleryTherapist.name[0]}
                   </div>
                 )}
-
                 {galleryPhotos.length > 1 && (
                   <>
                     <button
-                      type="button"
-                      onClick={prevGalleryPhoto}
-                      className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center bg-background/80 hover:bg-background text-foreground transition-colors"
+                      onClick={() => setGalleryIndex((i) => (i - 1 + galleryPhotos.length) % galleryPhotos.length)}
+                      className="absolute left-3 top-1/2 -translate-y-1/2 bg-background/80 hover:bg-background text-foreground p-2 rounded-full"
                       aria-label="Previous photo"
                     >
-                      <ChevronLeft size={18} />
+                      <ArrowLeft size={16} />
                     </button>
                     <button
-                      type="button"
-                      onClick={nextGalleryPhoto}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center bg-background/80 hover:bg-background text-foreground transition-colors"
+                      onClick={() => setGalleryIndex((i) => (i + 1) % galleryPhotos.length)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 bg-background/80 hover:bg-background text-foreground p-2 rounded-full"
                       aria-label="Next photo"
                     >
-                      <ArrowRight size={18} />
+                      <ArrowRight size={16} />
                     </button>
-                    <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
-                      {galleryPhotos.map((_, i) => (
-                        <button
-                          key={i}
-                          type="button"
-                          onClick={() => setGalleryIndex(i)}
-                          className={`w-1.5 h-1.5 rounded-full transition-colors ${
-                            i === galleryIndex
-                              ? "bg-primary"
-                              : "bg-background/80"
-                          }`}
-                          aria-label={`Go to photo ${i + 1}`}
-                        />
-                      ))}
-                    </div>
+                    <span className="absolute bottom-3 left-1/2 -translate-x-1/2 text-[10px] tracking-[0.2em] uppercase bg-background/80 text-foreground px-2 py-1">
+                      {Math.min(galleryIndex, galleryPhotos.length - 1) + 1} / {galleryPhotos.length}
+                    </span>
                   </>
                 )}
               </div>
+              {galleryPhotos.length > 1 && (
+                <div className="flex gap-2 px-6 pt-4 overflow-x-auto">
+                  {galleryPhotos.map((src, i) => (
+                    <button
+                      key={src + i}
+                      onClick={() => setGalleryIndex(i)}
+                      className={`w-16 h-16 flex-shrink-0 overflow-hidden border ${
+                        i === galleryIndex ? "border-primary" : "border-border opacity-60 hover:opacity-100"
+                      }`}
+                    >
+                      <img src={src} alt="" className="w-full h-full object-cover" />
+                    </button>
+                  ))}
+                </div>
+              )}
               <div className="p-6 flex items-center justify-between gap-4">
                 <div>
-                  <h3 className="font-serif text-2xl text-foreground">
-                    {galleryTherapist.name}
-                  </h3>
+                  <h3 className="font-serif text-2xl text-foreground">{galleryTherapist.name}</h3>
                   <div className="flex flex-wrap gap-2 mt-2">
-                    {galleryTherapist.specialties.map((s) => (
-                      <span
-                        key={s}
-                        className="text-[10px] tracking-[0.1em] uppercase px-2 py-1 bg-muted text-muted-foreground"
-                      >
+                    {galleryTherapist.specialties.map((s: string) => (
+                      <span key={s} className="text-[10px] tracking-[0.1em] uppercase px-2 py-1 bg-muted text-muted-foreground">
                         {s}
                       </span>
                     ))}
@@ -877,7 +648,8 @@ const Booking = () => {
                 <button
                   onClick={() => {
                     setSelectedTherapist(galleryTherapist.id);
-                    closeGallery();
+                    setGalleryTherapistId(null);
+                    setGalleryIndex(0);
                   }}
                   className="px-6 py-3 text-xs tracking-[0.2em] uppercase bg-primary text-primary-foreground hover:bg-warm-taupe transition-colors whitespace-nowrap"
                 >
@@ -888,6 +660,7 @@ const Booking = () => {
           )}
         </DialogContent>
       </Dialog>
+
     </Layout>
   );
 };
