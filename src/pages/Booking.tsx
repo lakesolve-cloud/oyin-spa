@@ -106,6 +106,8 @@ const Booking = () => {
   const [selectedTherapist, setSelectedTherapist] = useState<string | null>(null);
   const [therapists, setTherapists] = useState<any[]>(fallbackTherapists);
   const [addHotStone, setAddHotStone] = useState(false);
+  const [addressZone, setAddressZone] = useState("");
+  const [fullAddress, setFullAddress] = useState("");
   const [galleryTherapistId, setGalleryTherapistId] = useState<string | null>(null);
   const [galleryIndex, setGalleryIndex] = useState(0);
 
@@ -157,7 +159,10 @@ const Booking = () => {
 
   const canProceed = () => {
     switch (step) {
-      case 1: return selectedServiceId && selectedLocation;
+      case 1:
+        if (!selectedServiceId || !selectedLocation) return false;
+        if (selectedLocation === "mobile" && (!addressZone || fullAddress.trim().length < 8)) return false;
+        return true;
       case 2: return selectedDate && selectedTime;
       case 3: return selectedTherapist !== null;
       default: return false;
@@ -236,6 +241,8 @@ const Booking = () => {
                         setSelectedCategory("");
                         setSelectedServiceId("");
                         setAddHotStone(false);
+                        setAddressZone("");
+                        setFullAddress("");
                       }}
                       className={`p-6 border text-center transition-colors ${
                         selectedLocation === loc.id
@@ -314,6 +321,40 @@ const Booking = () => {
                       <span className="text-sm text-foreground">Hot Stone Add-On</span>
                       <span className="text-sm font-medium text-foreground">{hotStonePrice}</span>
                     </button>
+                  </div>
+                )}
+
+                {/* Address for mobile bookings */}
+                {selectedLocation === "mobile" && selectedServiceId && (
+                  <div className="mb-10">
+                    <h3 className="font-serif text-lg mb-4 text-foreground">Your Address</h3>
+                    <label className="block text-xs tracking-[0.1em] uppercase text-muted-foreground mb-2">
+                      Area
+                    </label>
+                    <select
+                      value={addressZone}
+                      onChange={(e) => setAddressZone(e.target.value)}
+                      className="w-full mb-5 px-4 py-3 text-sm bg-background border border-border text-foreground focus:outline-none focus:border-accent"
+                    >
+                      <option value="">Select area</option>
+                      <option value="Mainland">Mainland</option>
+                      <option value="Island">Island</option>
+                    </select>
+
+                    <label className="block text-xs tracking-[0.1em] uppercase text-muted-foreground mb-2">
+                      Full Address
+                    </label>
+                    <textarea
+                      value={fullAddress}
+                      onChange={(e) => setFullAddress(e.target.value.slice(0, 300))}
+                      rows={3}
+                      maxLength={300}
+                      placeholder="Street, building, apartment / hotel & room number, landmark"
+                      className="w-full px-4 py-3 text-sm bg-background border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-accent resize-none"
+                    />
+                    <p className="text-xs text-muted-foreground mt-2">
+                      Required so your therapist can reach you on time.
+                    </p>
                   </div>
                 )}
               </motion.div>
@@ -478,6 +519,12 @@ const Booking = () => {
                       {locationOptions.find((l) => l.id === selectedLocation)?.label}
                     </span>
                   </div>
+                  {selectedLocation === "mobile" && (
+                    <div className="p-6 flex justify-between gap-6">
+                      <span className="text-sm text-muted-foreground shrink-0">Address</span>
+                      <span className="text-sm text-foreground text-right">{addressZone} — {fullAddress}</span>
+                    </div>
+                  )}
                   <div className="p-6 flex justify-between">
                     <span className="text-sm text-muted-foreground">Date & Time</span>
                     <span className="text-sm text-foreground">{selectedDate} at {selectedTime}</span>
@@ -534,7 +581,8 @@ const Booking = () => {
                     const depositFmt = `₦${deposit.toLocaleString()}`;
                     const totalFmt = `₦${total.toLocaleString()}`;
                     const therapistLine = requiresTherapist ? `\nTherapist: ${selectedTherapistData?.name}` : "";
-                    const msg = `Hello, I'd like to confirm my booking:\n\nCategory: ${selectedCategory}\nService: ${currentService?.name}\nPrice: ${currentService?.price}${addHotStone ? ` + ${hotStonePrice} (Hot Stone)` : ""}\nTotal: ${totalFmt}\nDeposit (30%): ${depositFmt}\nLocation: ${locationOptions.find(l => l.id === selectedLocation)?.label}\nDate: ${selectedDate}\nTime: ${selectedTime}${therapistLine}\n\nI'm ready to pay the ${depositFmt} deposit.`;
+                    const addressLine = selectedLocation === "mobile" ? `\nArea: ${addressZone}\nAddress: ${fullAddress.trim()}` : "";
+                    const msg = `Hello, I'd like to confirm my booking:\n\nCategory: ${selectedCategory}\nService: ${currentService?.name}\nPrice: ${currentService?.price}${addHotStone ? ` + ${hotStonePrice} (Hot Stone)` : ""}\nTotal: ${totalFmt}\nDeposit (30%): ${depositFmt}\nLocation: ${locationOptions.find(l => l.id === selectedLocation)?.label}${addressLine}\nDate: ${selectedDate}\nTime: ${selectedTime}${therapistLine}\n\nI'm ready to pay the ${depositFmt} deposit.`;
                     window.open("https://wa.me/2347033948417?text=" + encodeURIComponent(msg), "_blank");
                   }}
                 >
