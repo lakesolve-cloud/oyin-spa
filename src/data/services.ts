@@ -358,7 +358,7 @@ export const mobileMassageServices: MassageService[] = [
     ],
   },
   {
-    name: "Nuru Signature",
+    name: "Nu-ru Signature",
     items: [
       { duration: "60 mins", price: "₦100,000" },
       { duration: "90 mins", price: "₦150,000" },
@@ -385,7 +385,7 @@ export const mobileMassageServices: MassageService[] = [
     ],
   },
   {
-    name: "Couples Nuru Signature",
+    name: "Couples Nu-ru Signature",
     items: [
       { duration: "60 mins", price: "₦250,000" },
       { duration: "90 mins", price: "₦375,000" },
@@ -394,7 +394,7 @@ export const mobileMassageServices: MassageService[] = [
     ],
   },
   {
-    name: "Four Hand Nuru Signature",
+    name: "Four Hand Nu-ru Signature",
     items: [
       { duration: "60 mins", price: "₦250,000" },
       { duration: "90 mins", price: "₦375,000" },
@@ -403,7 +403,7 @@ export const mobileMassageServices: MassageService[] = [
     ],
   },
   {
-    name: "Swedish Nuru Signature",
+    name: "Swedish Nu-ru Signature",
     items: [
       { duration: "60 mins", price: "₦120,000" },
       { duration: "90 mins", price: "₦180,000" },
@@ -412,7 +412,7 @@ export const mobileMassageServices: MassageService[] = [
     ],
   },
   {
-    name: "Deep Tissue Nuru Signature",
+    name: "Deep Tissue Nu-ru Signature",
     items: [
       { duration: "60 mins", price: "₦150,000" },
       { duration: "90 mins", price: "₦230,000" },
@@ -642,7 +642,7 @@ export const comboPackages: SpaPackage[] = [
     name: "The Ultimate Indulgence",
     price: "₦150,000",
     includes: [
-      "60 mins Nuru Signature Massage",
+      "60 mins Nu-ru Signature Massage",
       "Deep Cleaning Facial",
       "Classic Pedicure + Manicure",
       "Hot Stone Therapy",
