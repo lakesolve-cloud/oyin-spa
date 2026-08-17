@@ -8,6 +8,7 @@ import About from "./pages/About";
 import Services from "./pages/Services";
 import MobileSpa from "./pages/MobileSpa";
 import Membership from "./pages/Membership";
+import Packages from "./pages/Packages";
 import Booking from "./pages/Booking";
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
@@ -28,6 +29,7 @@ const App = () => (
           <Route path="/services" element={<Services />} />
           <Route path="/mobile-spa" element={<MobileSpa />} />
           <Route path="/membership" element={<Membership />} />
+          <Route path="/packages" element={<Packages />} />
           <Route path="/booking" element={<Booking />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/admin/login" element={<AdminLogin />} />
