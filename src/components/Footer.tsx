@@ -22,6 +22,7 @@ const Footer = () => {
               <Link to="/about" className="text-sm opacity-70 hover:opacity-100 transition-opacity">About Oyin</Link>
               <Link to="/services" className="text-sm opacity-70 hover:opacity-100 transition-opacity">Our Services</Link>
               <Link to="/mobile-spa" className="text-sm opacity-70 hover:opacity-100 transition-opacity">Mobile Spa</Link>
+              <Link to="/packages" className="text-sm opacity-70 hover:opacity-100 transition-opacity">Packages</Link>
               <Link to="/membership" className="text-sm opacity-70 hover:opacity-100 transition-opacity">Membership & VIP</Link>
               <Link to="/booking" className="text-sm opacity-70 hover:opacity-100 transition-opacity">Book an Appointment</Link>
             </div>
