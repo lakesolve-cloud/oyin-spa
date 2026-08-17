@@ -9,6 +9,7 @@ const navLinks = [
   { href: "/about", label: "About" },
   { href: "/services", label: "Services" },
   { href: "/mobile-spa", label: "Mobile Spa" },
+  { href: "/packages", label: "Packages" },
   { href: "/membership", label: "Membership" },
   { href: "/contact", label: "Contact" },
 ];
