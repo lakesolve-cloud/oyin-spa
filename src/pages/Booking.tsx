@@ -45,6 +45,8 @@ interface BookableService {
   name: string;
   price: string;
   duration?: string;
+
+  // Package-only details.
   description?: string;
   includes?: string[];
   isPackage?: boolean;
@@ -53,12 +55,6 @@ interface BookableService {
 // ============================================================
 // HELPERS
 // ============================================================
-
-const slugify = (value: string) =>
-  value
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "");
 
 const parsePrice = (price?: string) =>
   Number((price || "").replace(/[^\d.]/g, "")) || 0;
@@ -71,12 +67,12 @@ function buildBookableList(
   spa: typeof spaServices,
   massage: typeof massageServices,
   quick: typeof quickMassages,
-  includePackages: boolean = false
+  includePackages = false
 ): BookableService[] {
   const list: BookableService[] = [];
 
   // ----------------------------------------------------------
-  // MASSAGES
+  // MASSAGE
   // ----------------------------------------------------------
 
   massage.forEach((service) => {
@@ -94,10 +90,10 @@ function buildBookableList(
 
         duration: item.duration,
 
-        description:
-          "A personalised massage experience designed around your chosen technique and session length.",
-
-        isPackage: false,
+        // IMPORTANT:
+        // No description is added here.
+        // Normal massage services therefore show
+        // exactly as normal selectable services.
       });
     });
   });
@@ -118,12 +114,7 @@ function buildBookableList(
 
       price: item.price,
 
-      duration: item.name.match(/\((.*?)\)/)?.[1],
-
-      description:
-        "A focused treatment designed for a shorter, targeted relaxation experience.",
-
-      isPackage: false,
+      // No details for normal services.
     });
   });
 
@@ -142,10 +133,11 @@ function buildBookableList(
 
           category: "Celebration Packages",
 
-          name: pkg.name,
+          name: `${pkg.name} (${group.group})`,
 
           price: pkg.price,
 
+          // Package details come directly from services.ts.
           description: group.blurb,
 
           includes: pkg.includes,
@@ -167,9 +159,6 @@ function buildBookableList(
         name: pkg.name,
 
         price: pkg.price,
-
-        description:
-          "A curated combination of treatments designed to give you a complete spa experience.",
 
         includes: pkg.includes,
 
@@ -195,9 +184,8 @@ function buildBookableList(
 
         price: item.price,
 
-        description: `A ${cat.category.toLowerCase()} treatment selected from our spa service menu.`,
-
-        isPackage: false,
+        // IMPORTANT:
+        // No description is added here.
       });
     });
   });
@@ -244,15 +232,18 @@ const locationOptions = [
 // TIME SLOTS
 // ============================================================
 
-const timeSlots = Array.from({ length: 48 }, (_, i) => {
-  const h = Math.floor(i / 2)
-    .toString()
-    .padStart(2, "0");
+const timeSlots = Array.from(
+  { length: 48 },
+  (_, i) => {
+    const h = Math.floor(i / 2)
+      .toString()
+      .padStart(2, "0");
 
-  const m = i % 2 === 0 ? "00" : "30";
+    const m = i % 2 === 0 ? "00" : "30";
 
-  return `${h}:${m}`;
-});
+    return `${h}:${m}`;
+  }
+);
 
 // ============================================================
 // CATEGORIES THAT REQUIRE A THERAPIST
@@ -273,7 +264,10 @@ const fallbackTherapists = [
   {
     id: "1",
     name: "Amara",
-    specialties: ["Deep Tissue", "Sports Recovery"],
+    specialties: [
+      "Deep Tissue",
+      "Sports Recovery",
+    ],
     available: true,
     photo_url: null,
     photo: therapistAmara,
@@ -284,7 +278,10 @@ const fallbackTherapists = [
   {
     id: "2",
     name: "Chidera",
-    specialties: ["Relaxation", "Aromatherapy"],
+    specialties: [
+      "Relaxation",
+      "Aromatherapy",
+    ],
     available: true,
     photo_url: null,
     photo: therapistChidera,
@@ -295,7 +292,10 @@ const fallbackTherapists = [
   {
     id: "3",
     name: "Folake",
-    specialties: ["Prenatal", "Relaxation"],
+    specialties: [
+      "Prenatal",
+      "Relaxation",
+    ],
     available: true,
     photo_url: null,
     photo: therapistFolake,
@@ -306,7 +306,10 @@ const fallbackTherapists = [
   {
     id: "4",
     name: "Bisi",
-    specialties: ["Deep Tissue", "Hot Stone"],
+    specialties: [
+      "Deep Tissue",
+      "Hot Stone",
+    ],
     available: false,
     photo_url: null,
     photo: therapistBisi,
@@ -317,7 +320,10 @@ const fallbackTherapists = [
   {
     id: "5",
     name: "Nneka",
-    specialties: ["Couples", "Executive"],
+    specialties: [
+      "Couples",
+      "Executive",
+    ],
     available: true,
     photo_url: null,
     photo: therapistNneka,
@@ -327,47 +333,51 @@ const fallbackTherapists = [
 ];
 
 // ============================================================
-// BOOKING COMPONENT
+// BOOKING
 // ============================================================
 
 const Booking = () => {
   const [step, setStep] = useState(1);
 
-  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedCategory, setSelectedCategory] =
+    useState("");
 
-  const [selectedServiceId, setSelectedServiceId] = useState("");
+  const [selectedServiceId, setSelectedServiceId] =
+    useState("");
 
-  // NEW:
-  // This controls the service details panel.
-  const [detailsServiceId, setDetailsServiceId] = useState("");
+  // Controls the package details accordion.
+  const [detailsServiceId, setDetailsServiceId] =
+    useState("");
 
-  // NEW:
-  // User must explicitly continue after reviewing details.
-  const [serviceConfirmed, setServiceConfirmed] = useState(false);
+  const [selectedLocation, setSelectedLocation] =
+    useState("");
 
-  const [selectedLocation, setSelectedLocation] = useState("");
+  const [selectedDate, setSelectedDate] =
+    useState("");
 
-  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedTime, setSelectedTime] =
+    useState("");
 
-  const [selectedTime, setSelectedTime] = useState("");
-
-  const [selectedTherapist, setSelectedTherapist] = useState<string | null>(
-    null
-  );
+  const [selectedTherapist, setSelectedTherapist] =
+    useState<string | null>(null);
 
   const [therapists, setTherapists] =
     useState<any[]>(fallbackTherapists);
 
-  const [addHotStone, setAddHotStone] = useState(false);
+  const [addHotStone, setAddHotStone] =
+    useState(false);
 
-  const [addressZone, setAddressZone] = useState("");
+  const [addressZone, setAddressZone] =
+    useState("");
 
-  const [fullAddress, setFullAddress] = useState("");
+  const [fullAddress, setFullAddress] =
+    useState("");
 
   const [galleryTherapistId, setGalleryTherapistId] =
     useState<string | null>(null);
 
-  const [galleryIndex, setGalleryIndex] = useState(0);
+  const [galleryIndex, setGalleryIndex] =
+    useState(0);
 
   // ==========================================================
   // FETCH THERAPISTS
@@ -394,17 +404,19 @@ const Booking = () => {
   }, []);
 
   // ==========================================================
-  // PRESELECT PACKAGE FROM PACKAGES PAGE
+  // PRESELECT SERVICE FROM URL
   // ==========================================================
 
   useEffect(() => {
-    const id = new URLSearchParams(window.location.search).get(
-      "service"
-    );
+    const id = new URLSearchParams(
+      window.location.search
+    ).get("service");
 
     if (!id) return;
 
-    const match = inSpaBookable.find((s) => s.id === id);
+    const match = inSpaBookable.find(
+      (s) => s.id === id
+    );
 
     if (!match) return;
 
@@ -412,15 +424,14 @@ const Booking = () => {
     setSelectedCategory(match.category);
     setSelectedServiceId(match.id);
 
-    // Open details automatically when coming from Packages page.
-    setDetailsServiceId(match.id);
-
-    // User still needs to explicitly confirm.
-    setServiceConfirmed(false);
+    // Open details automatically only if this is a package.
+    if (match.isPackage) {
+      setDetailsServiceId(match.id);
+    }
   }, []);
 
   // ==========================================================
-  // ACTIVE SERVICES BASED ON LOCATION
+  // ACTIVE SERVICES
   // ==========================================================
 
   const activeBookable = useMemo(() => {
@@ -437,7 +448,11 @@ const Booking = () => {
 
   const activeCategories = useMemo(() => {
     const categories = [
-      ...new Set(activeBookable.map((s) => s.category)),
+      ...new Set(
+        activeBookable.map(
+          (service) => service.category
+        )
+      ),
     ];
 
     const priority = [
@@ -450,38 +465,41 @@ const Booking = () => {
       const aIndex = priority.indexOf(a);
       const bIndex = priority.indexOf(b);
 
-      const aPriority = aIndex === -1 ? 999 : aIndex;
-      const bPriority = bIndex === -1 ? 999 : bIndex;
+      const aPriority =
+        aIndex === -1 ? 999 : aIndex;
+
+      const bPriority =
+        bIndex === -1 ? 999 : bIndex;
 
       return aPriority - bPriority;
     });
   }, [activeBookable]);
 
   // ==========================================================
-  // FILTER SERVICES BY CATEGORY
+  // FILTERED SERVICES
   // ==========================================================
 
   const filteredServices = useMemo(() => {
     return activeBookable.filter(
-      (s) => s.category === selectedCategory
+      (service) =>
+        service.category ===
+        selectedCategory
     );
-  }, [activeBookable, selectedCategory]);
+  }, [
+    activeBookable,
+    selectedCategory,
+  ]);
 
   // ==========================================================
   // CURRENT SERVICE
   // ==========================================================
 
-  const currentService = activeBookable.find(
-    (s) => s.id === selectedServiceId
-  );
-
-  // ==========================================================
-  // SERVICE DETAILS SERVICE
-  // ==========================================================
-
-  const detailsService = activeBookable.find(
-    (s) => s.id === detailsServiceId
-  );
+  const currentService =
+    activeBookable.find(
+      (service) =>
+        service.id ===
+        selectedServiceId
+    );
 
   // ==========================================================
   // CATEGORY HELPERS
@@ -491,17 +509,21 @@ const Booking = () => {
     selectedCategory === "Massage";
 
   const isPackageCategory =
-    selectedCategory === "Celebration Packages" ||
-    selectedCategory === "Spa Combo Packages";
+    selectedCategory ===
+      "Celebration Packages" ||
+    selectedCategory ===
+      "Spa Combo Packages";
 
   const packageAllowed =
     selectedLocation === "in-spa";
 
   const requiresTherapist =
-    THERAPIST_CATEGORIES.has(selectedCategory);
+    THERAPIST_CATEGORIES.has(
+      selectedCategory
+    );
 
   // ==========================================================
-  // HOT STONE PRICE
+  // HOT STONE
   // ==========================================================
 
   const hotStonePrice =
@@ -513,97 +535,113 @@ const Booking = () => {
   // AVAILABLE THERAPISTS
   // ==========================================================
 
-  const availableTherapists = therapists.filter((t) => {
-    if (!t.available) return false;
-
-    const mode = t.service_mode ?? "both";
-
-    if (mode !== "both") {
-      if (
-        selectedLocation === "mobile" &&
-        mode !== "mobile"
-      ) {
+  const availableTherapists =
+    therapists.filter((therapist) => {
+      if (!therapist.available) {
         return false;
       }
 
-      if (
-        selectedLocation === "in-spa" &&
-        mode !== "walk_in"
-      ) {
-        return false;
+      const mode =
+        therapist.service_mode ??
+        "both";
+
+      if (mode !== "both") {
+        if (
+          selectedLocation ===
+            "mobile" &&
+          mode !== "mobile"
+        ) {
+          return false;
+        }
+
+        if (
+          selectedLocation ===
+            "in-spa" &&
+          mode !== "walk_in"
+        ) {
+          return false;
+        }
       }
-    }
-
-    // Zone restriction applies only to mobile bookings.
-    if (
-      selectedLocation === "mobile" &&
-      addressZone
-    ) {
-      const zone = t.zone ?? "both";
 
       if (
-        zone !== "both" &&
-        zone !== addressZone.toLowerCase()
+        selectedLocation ===
+          "mobile" &&
+        addressZone
       ) {
-        return false;
-      }
-    }
+        const zone =
+          therapist.zone ?? "both";
 
-    return true;
-  });
+        if (
+          zone !== "both" &&
+          zone !==
+            addressZone.toLowerCase()
+        ) {
+          return false;
+        }
+      }
+
+      return true;
+    });
 
   // ==========================================================
   // SELECTED THERAPIST
   // ==========================================================
 
-  const selectedTherapistData = therapists.find(
-    (t) => t.id === selectedTherapist
-  );
+  const selectedTherapistData =
+    therapists.find(
+      (therapist) =>
+        therapist.id ===
+        selectedTherapist
+    );
 
   // ==========================================================
   // GALLERY
   // ==========================================================
 
-  const galleryTherapist = therapists.find(
-    (t) => t.id === galleryTherapistId
-  );
+  const galleryTherapist =
+    therapists.find(
+      (therapist) =>
+        therapist.id ===
+        galleryTherapistId
+    );
 
-  const galleryPhotos: string[] = galleryTherapist
-    ? galleryTherapist.photo_urls &&
-      galleryTherapist.photo_urls.length > 0
-      ? galleryTherapist.photo_urls
-      : [
-          galleryTherapist.photo_url ||
-            galleryTherapist.photo,
-        ].filter(Boolean)
-    : [];
+  const galleryPhotos: string[] =
+    galleryTherapist
+      ? galleryTherapist.photo_urls &&
+        galleryTherapist.photo_urls
+          .length > 0
+        ? galleryTherapist.photo_urls
+        : [
+            galleryTherapist.photo_url ||
+              galleryTherapist.photo,
+          ].filter(Boolean)
+      : [];
 
   // ==========================================================
   // SELECT SERVICE
   // ==========================================================
 
-  const selectService = (service: BookableService) => {
-    setSelectedServiceId(service.id);
+  const selectService = (
+    service: BookableService
+  ) => {
+    // Selecting a service immediately selects it.
+    setSelectedServiceId(
+      service.id
+    );
 
-    setDetailsServiceId(service.id);
-
-    setServiceConfirmed(false);
+    // Only packages have actual details
+    // in the current services.ts data.
+    if (service.isPackage) {
+      setDetailsServiceId(
+        service.id
+      );
+    } else {
+      setDetailsServiceId("");
+    }
 
     // Reset dependent selections.
     setSelectedTherapist(null);
     setAddHotStone(false);
-  };
-
-  // ==========================================================
-  // CONFIRM SERVICE
-  // ==========================================================
-
-  const confirmService = () => {
-    if (!detailsService) return;
-
-    setSelectedServiceId(detailsService.id);
-
-    setServiceConfirmed(true);
   };
 
   // ==========================================================
@@ -620,12 +658,7 @@ const Booking = () => {
           return false;
         }
 
-        // User must review/confirm service details.
-        if (!serviceConfirmed) {
-          return false;
-        }
-
-        // Packages cannot be booked for Home / Hotel.
+        // Packages are In-Spa only.
         if (
           isPackageCategory &&
           !packageAllowed
@@ -633,11 +666,13 @@ const Booking = () => {
           return false;
         }
 
-        // Mobile bookings require address information.
+        // Mobile requires address.
         if (
-          selectedLocation === "mobile" &&
+          selectedLocation ===
+            "mobile" &&
           (!addressZone ||
-            fullAddress.trim().length < 8)
+            fullAddress.trim()
+              .length < 8)
         ) {
           return false;
         }
@@ -646,13 +681,16 @@ const Booking = () => {
       }
 
       case 2:
-        return !!(
+        return Boolean(
           selectedDate &&
-          selectedTime
+            selectedTime
         );
 
       case 3:
-        return selectedTherapist !== null;
+        return (
+          selectedTherapist !==
+          null
+        );
 
       default:
         return false;
@@ -660,23 +698,23 @@ const Booking = () => {
   };
 
   // ==========================================================
-  // NEXT STEP
+  // NEXT
   // ==========================================================
 
   const goNext = () => {
     if (!canProceed()) return;
 
-    // Services that don't require a therapist
-    // skip Step 3.
+    // Skip therapist selection when not required.
     if (
       step === 2 &&
       !requiresTherapist
     ) {
       setSelectedTherapist(null);
       setStep(4);
-    } else {
-      setStep(step + 1);
+      return;
     }
+
+    setStep(step + 1);
   };
 
   // ==========================================================
@@ -689,9 +727,10 @@ const Booking = () => {
       !requiresTherapist
     ) {
       setStep(2);
-    } else {
-      setStep(step - 1);
+      return;
     }
+
+    setStep(step - 1);
   };
 
   // ==========================================================
@@ -701,13 +740,13 @@ const Booking = () => {
   const dates = Array.from(
     { length: 14 },
     (_, i) => {
-      const d = new Date();
+      const date = new Date();
 
-      d.setDate(
-        d.getDate() + i
+      date.setDate(
+        date.getDate() + i
       );
 
-      return d;
+      return date;
     }
   );
 
@@ -716,13 +755,19 @@ const Booking = () => {
   // ==========================================================
 
   const bookingTotal =
-    parsePrice(currentService?.price) +
+    parsePrice(
+      currentService?.price
+    ) +
     (addHotStone
-      ? parsePrice(hotStonePrice)
+      ? parsePrice(
+          hotStonePrice
+        )
       : 0);
 
   const bookingDeposit =
-    Math.round(bookingTotal * 0.3);
+    Math.round(
+      bookingTotal * 0.3
+    );
 
   // ==========================================================
   // RENDER
@@ -769,30 +814,37 @@ const Booking = () => {
                 ? [1, 2, 3, 4]
                 : [1, 2, 4]
             ).map(
-              (s, idx, arr) => (
+              (
+                currentStep,
+                index,
+                array
+              ) => (
                 <div
-                  key={s}
+                  key={currentStep}
                   className="flex items-center gap-3"
                 >
                   <div
                     className={`w-8 h-8 rounded-full flex items-center justify-center text-xs transition-colors ${
-                      step >= s
+                      step >= currentStep
                         ? "bg-primary text-primary-foreground"
                         : "bg-muted text-muted-foreground"
                     }`}
                   >
-                    {step > s ? (
+                    {step >
+                    currentStep ? (
                       <Check size={14} />
                     ) : (
-                      idx + 1
+                      index + 1
                     )}
                   </div>
 
-                  {idx <
-                    arr.length - 1 && (
+                  {index <
+                    array.length -
+                      1 && (
                     <div
                       className={`w-8 h-px ${
-                        step > s
+                        step >
+                        currentStep
                           ? "bg-primary"
                           : "bg-border"
                       }`}
@@ -806,7 +858,7 @@ const Booking = () => {
           <AnimatePresence mode="wait">
 
             {/* =================================================
-                STEP 1 — SERVICE SELECTION
+                STEP 1
             ================================================= */}
 
             {step === 1 && (
@@ -837,13 +889,15 @@ const Booking = () => {
 
                 <div className="grid grid-cols-2 gap-4 mb-10">
                   {locationOptions.map(
-                    (loc) => (
+                    (location) => (
                       <button
-                        key={loc.id}
+                        key={
+                          location.id
+                        }
                         type="button"
                         onClick={() => {
                           setSelectedLocation(
-                            loc.id
+                            location.id
                           );
 
                           setSelectedCategory(
@@ -856,10 +910,6 @@ const Booking = () => {
 
                           setDetailsServiceId(
                             ""
-                          );
-
-                          setServiceConfirmed(
-                            false
                           );
 
                           setSelectedTherapist(
@@ -890,7 +940,7 @@ const Booking = () => {
                         }}
                         className={`p-6 border text-center transition-colors ${
                           selectedLocation ===
-                          loc.id
+                          location.id
                             ? "border-primary bg-secondary"
                             : "border-border hover:border-accent"
                         }`}
@@ -898,11 +948,15 @@ const Booking = () => {
                         <MapPin className="w-5 h-5 mx-auto mb-2 text-accent" />
 
                         <span className="block text-sm font-medium text-foreground">
-                          {loc.label}
+                          {
+                            location.label
+                          }
                         </span>
 
                         <span className="block text-xs text-muted-foreground mt-1">
-                          {loc.desc}
+                          {
+                            location.desc
+                          }
                         </span>
                       </button>
                     )
@@ -919,13 +973,15 @@ const Booking = () => {
 
                     <div className="flex flex-wrap gap-2 mb-10">
                       {activeCategories.map(
-                        (cat) => (
+                        (category) => (
                           <button
-                            key={cat}
+                            key={
+                              category
+                            }
                             type="button"
                             onClick={() => {
                               setSelectedCategory(
-                                cat
+                                category
                               );
 
                               setSelectedServiceId(
@@ -934,10 +990,6 @@ const Booking = () => {
 
                               setDetailsServiceId(
                                 ""
-                              );
-
-                              setServiceConfirmed(
-                                false
                               );
 
                               setAddHotStone(
@@ -950,12 +1002,14 @@ const Booking = () => {
                             }}
                             className={`px-4 py-2 text-xs tracking-[0.1em] uppercase border transition-colors ${
                               selectedCategory ===
-                              cat
+                              category
                                 ? "border-primary bg-secondary text-foreground"
                                 : "border-border text-muted-foreground hover:border-accent"
                             }`}
                           >
-                            {cat}
+                            {
+                              category
+                            }
                           </button>
                         )
                       )}
@@ -963,7 +1017,7 @@ const Booking = () => {
                   </>
                 )}
 
-                {/* SERVICE */}
+                {/* SERVICES */}
 
                 {selectedCategory && (
                   <>
@@ -972,33 +1026,38 @@ const Booking = () => {
                         Select Service
                       </h3>
 
-                      <span className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground">
-                        {filteredServices.length}{" "}
-                        available
-                      </span>
+                      {isPackageCategory && (
+                        <span className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground">
+                          Select to view details
+                        </span>
+                      )}
                     </div>
 
-                    <div className="space-y-2 mb-8 max-h-[420px] overflow-y-auto pr-1">
+                    <div className="space-y-2 mb-10 max-h-[500px] overflow-y-auto pr-1">
+
                       {filteredServices.map(
                         (service) => {
                           const isSelected =
                             selectedServiceId ===
                             service.id;
 
-                          const isOpen =
+                          const isDetailsOpen =
                             detailsServiceId ===
                             service.id;
 
                           return (
                             <div
-                              key={service.id}
+                              key={
+                                service.id
+                              }
                               className={`border transition-all ${
                                 isSelected
                                   ? "border-primary"
                                   : "border-border hover:border-accent"
                               }`}
                             >
-                              {/* SERVICE HEADER */}
+
+                              {/* SERVICE ROW */}
 
                               <button
                                 type="button"
@@ -1007,7 +1066,7 @@ const Booking = () => {
                                     service
                                   )
                                 }
-                                className={`w-full text-left px-5 py-4 flex justify-between items-center gap-4 ${
+                                className={`w-full text-left px-5 py-4 flex items-center justify-between gap-4 transition-colors ${
                                   isSelected
                                     ? "bg-secondary"
                                     : "bg-background"
@@ -1015,218 +1074,168 @@ const Booking = () => {
                               >
                                 <div className="min-w-0">
                                   <span className="block text-sm text-foreground">
-                                    {service.name}
+                                    {
+                                      service.name
+                                    }
                                   </span>
 
                                   {service.duration && (
                                     <span className="block text-[10px] uppercase tracking-[0.12em] text-muted-foreground mt-1">
-                                      {service.duration}
+                                      {
+                                        service.duration
+                                      }
                                     </span>
                                   )}
                                 </div>
 
                                 <div className="flex items-center gap-3 shrink-0">
-                                  <span className="text-sm font-medium text-foreground">
-                                    {service.price}
+                                  <span className="text-sm font-medium text-foreground whitespace-nowrap">
+                                    {
+                                      service.price
+                                    }
                                   </span>
 
-                                  {isOpen ? (
-                                    <ChevronUp
-                                      size={16}
-                                      className="text-muted-foreground"
-                                    />
-                                  ) : (
-                                    <ChevronDown
-                                      size={16}
-                                      className="text-muted-foreground"
-                                    />
-                                  )}
+                                  {/* Only packages have expandable details. */}
+
+                                  {service.isPackage &&
+                                    (isDetailsOpen ? (
+                                      <ChevronUp
+                                        size={
+                                          16
+                                        }
+                                        className="text-muted-foreground"
+                                      />
+                                    ) : (
+                                      <ChevronDown
+                                        size={
+                                          16
+                                        }
+                                        className="text-muted-foreground"
+                                      />
+                                    ))}
                                 </div>
                               </button>
 
-                              {/* DETAILS */}
+                              {/* =================================================
+                                  PACKAGE DETAILS ONLY
+                              ================================================= */}
 
-                              <AnimatePresence initial={false}>
-                                {isOpen && (
-                                  <motion.div
-                                    initial={{
-                                      height: 0,
-                                      opacity: 0,
-                                    }}
-                                    animate={{
-                                      height: "auto",
-                                      opacity: 1,
-                                    }}
-                                    exit={{
-                                      height: 0,
-                                      opacity: 0,
-                                    }}
-                                    transition={{
-                                      duration: 0.25,
-                                    }}
-                                    className="overflow-hidden"
-                                  >
-                                    <div className="px-5 pb-5 pt-2 border-t border-border bg-card">
+                              {service.isPackage && (
+                                <AnimatePresence
+                                  initial={
+                                    false
+                                  }
+                                >
+                                  {isDetailsOpen && (
+                                    <motion.div
+                                      initial={{
+                                        height: 0,
+                                        opacity: 0,
+                                      }}
+                                      animate={{
+                                        height:
+                                          "auto",
+                                        opacity: 1,
+                                      }}
+                                      exit={{
+                                        height: 0,
+                                        opacity: 0,
+                                      }}
+                                      transition={{
+                                        duration:
+                                          0.25,
+                                      }}
+                                      className="overflow-hidden"
+                                    >
+                                      <div className="px-5 py-5 border-t border-border bg-card">
 
-                                      <div className="flex items-start gap-3 mb-5">
-                                        <div className="w-8 h-8 shrink-0 rounded-full bg-secondary flex items-center justify-center">
-                                          <Sparkles
-                                            size={14}
-                                            className="text-accent"
-                                          />
-                                        </div>
+                                        {/* PACKAGE DESCRIPTION */}
 
-                                        <div>
-                                          <p className="text-[10px] tracking-[0.15em] uppercase text-muted-foreground mb-1">
-                                            About this service
-                                          </p>
+                                        {service.description && (
+                                          <div className="flex items-start gap-3 mb-6">
+                                            <div className="w-8 h-8 shrink-0 rounded-full bg-secondary flex items-center justify-center">
+                                              <Sparkles
+                                                size={
+                                                  14
+                                                }
+                                                className="text-accent"
+                                              />
+                                            </div>
 
-                                          <p className="text-sm leading-6 text-foreground">
-                                            {service.description}
-                                          </p>
-                                        </div>
-                                      </div>
+                                            <div>
+                                              <p className="text-[10px] tracking-[0.15em] uppercase text-muted-foreground mb-1">
+                                                About this experience
+                                              </p>
 
-                                      {/* PACKAGE CONTENT */}
-
-                                      {service.isPackage &&
-                                        service.includes &&
-                                        service.includes.length >
-                                          0 && (
-                                          <div className="mb-5">
-                                            <p className="text-[10px] tracking-[0.15em] uppercase text-muted-foreground mb-3">
-                                              What's included
-                                            </p>
-
-                                            <div className="space-y-2">
-                                              {service.includes.map(
-                                                (
-                                                  item,
-                                                  index
-                                                ) => (
-                                                  <div
-                                                    key={`${item}-${index}`}
-                                                    className="flex items-start gap-2"
-                                                  >
-                                                    <Check
-                                                      size={
-                                                        14
-                                                      }
-                                                      className="mt-0.5 shrink-0 text-primary"
-                                                    />
-
-                                                    <span className="text-sm text-foreground">
-                                                      {
-                                                        item
-                                                      }
-                                                    </span>
-                                                  </div>
-                                                )
-                                              )}
+                                              <p className="text-sm leading-6 text-foreground">
+                                                {
+                                                  service.description
+                                                }
+                                              </p>
                                             </div>
                                           </div>
                                         )}
 
-                                      {/* SERVICE META */}
+                                        {/* WHAT'S INCLUDED */}
 
-                                      <div className="grid grid-cols-2 gap-3 mb-5">
-                                        <div className="border border-border p-3">
-                                          <p className="text-[9px] tracking-[0.15em] uppercase text-muted-foreground mb-1">
-                                            Price
-                                          </p>
+                                        {service.includes &&
+                                          service
+                                            .includes
+                                            .length >
+                                            0 && (
+                                            <div>
+                                              <p className="text-[10px] tracking-[0.15em] uppercase text-muted-foreground mb-3">
+                                                What's included
+                                              </p>
 
-                                          <p className="text-sm font-medium text-foreground">
-                                            {
-                                              service.price
-                                            }
-                                          </p>
-                                        </div>
+                                              <div className="space-y-2">
+                                                {service.includes.map(
+                                                  (
+                                                    item,
+                                                    index
+                                                  ) => (
+                                                    <div
+                                                      key={`${item}-${index}`}
+                                                      className="flex items-start gap-2"
+                                                    >
+                                                      <Check
+                                                        size={
+                                                          14
+                                                        }
+                                                        className="mt-0.5 shrink-0 text-primary"
+                                                      />
 
-                                        <div className="border border-border p-3">
-                                          <p className="text-[9px] tracking-[0.15em] uppercase text-muted-foreground mb-1">
-                                            Location
-                                          </p>
+                                                      <span className="text-sm text-foreground">
+                                                        {
+                                                          item
+                                                        }
+                                                      </span>
+                                                    </div>
+                                                  )
+                                                )}
+                                              </div>
+                                            </div>
+                                          )}
 
-                                          <p className="text-sm font-medium text-foreground">
-                                            {selectedLocation ===
-                                            "mobile"
-                                              ? "Home / Hotel"
-                                              : "Walk-In"}
-                                          </p>
-                                        </div>
                                       </div>
-
-                                      {/* CONFIRM */}
-
-                                      <button
-                                        type="button"
-                                        onClick={
-                                          confirmService
-                                        }
-                                        className={`w-full py-3 text-xs tracking-[0.18em] uppercase transition-colors ${
-                                          serviceConfirmed &&
-                                          selectedServiceId ===
-                                            service.id
-                                            ? "bg-secondary text-foreground border border-primary"
-                                            : "bg-primary text-primary-foreground hover:bg-warm-taupe"
-                                        }`}
-                                      >
-                                        {serviceConfirmed &&
-                                        selectedServiceId ===
-                                          service.id
-                                          ? "Service Selected"
-                                          : "Continue with this service"}
-                                      </button>
-                                    </div>
-                                  </motion.div>
-                                )}
-                              </AnimatePresence>
+                                    </motion.div>
+                                  )}
+                                </AnimatePresence>
+                              )}
                             </div>
                           );
                         }
                       )}
+
                     </div>
                   </>
                 )}
 
-                {/* SELECTED SERVICE NOTICE */}
+                {/* =================================================
+                    HOT STONE
+                ================================================= */}
 
                 {selectedServiceId &&
-                  serviceConfirmed &&
-                  currentService && (
-                    <motion.div
-                      initial={{
-                        opacity: 0,
-                        y: 8,
-                      }}
-                      animate={{
-                        opacity: 1,
-                        y: 0,
-                      }}
-                      className="border border-primary bg-secondary p-4 mb-8"
-                    >
-                      <div className="flex items-center justify-between gap-4">
-                        <div>
-                          <p className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground mb-1">
-                            Selected service
-                          </p>
-
-                          <p className="text-sm font-medium text-foreground">
-                            {currentService.name}
-                          </p>
-                        </div>
-
-                        <span className="text-sm font-medium text-foreground">
-                          {currentService.price}
-                        </span>
-                      </div>
-                    </motion.div>
-                  )}
-
-                {/* HOT STONE */}
-
-                {selectedServiceId &&
-                  serviceConfirmed &&
                   isMassageCategory && (
                     <div className="mb-10">
                       <h3 className="font-serif text-lg mb-4 text-foreground">
@@ -1246,31 +1255,28 @@ const Booking = () => {
                             : "border-border hover:border-accent"
                         }`}
                       >
-                        <div>
-                          <span className="block text-sm text-foreground">
-                            Hot Stone Add-On
-                          </span>
-
-                          <span className="block text-[10px] text-muted-foreground mt-1">
-                            Enhance your massage with
-                            hot stone therapy
-                          </span>
-                        </div>
+                        <span className="text-sm text-foreground">
+                          Hot Stone Add-On
+                        </span>
 
                         <span className="text-sm font-medium text-foreground">
-                          {hotStonePrice}
+                          {
+                            hotStonePrice
+                          }
                         </span>
                       </button>
                     </div>
                   )}
 
-                {/* MOBILE ADDRESS */}
+                {/* =================================================
+                    MOBILE ADDRESS
+                ================================================= */}
 
                 {selectedLocation ===
                   "mobile" &&
-                  selectedServiceId &&
-                  serviceConfirmed && (
+                  selectedServiceId && (
                     <div className="mb-10">
+
                       <h3 className="font-serif text-lg mb-4 text-foreground">
                         Your Address
                       </h3>
@@ -1280,10 +1286,14 @@ const Booking = () => {
                       </label>
 
                       <select
-                        value={addressZone}
-                        onChange={(e) =>
+                        value={
+                          addressZone
+                        }
+                        onChange={(event) =>
                           setAddressZone(
-                            e.target.value
+                            event
+                              .target
+                              .value
                           )
                         }
                         className="w-full mb-5 px-4 py-3 text-sm bg-background border border-border text-foreground focus:outline-none focus:border-accent"
@@ -1306,10 +1316,12 @@ const Booking = () => {
                       </label>
 
                       <textarea
-                        value={fullAddress}
-                        onChange={(e) =>
+                        value={
+                          fullAddress
+                        }
+                        onChange={(event) =>
                           setFullAddress(
-                            e.target.value.slice(
+                            event.target.value.slice(
                               0,
                               300
                             )
@@ -1324,8 +1336,10 @@ const Booking = () => {
                       <p className="text-xs text-muted-foreground mt-2">
                         Required so your therapist can reach you on time.
                       </p>
+
                     </div>
                   )}
+
               </motion.div>
             )}
 
@@ -1352,128 +1366,133 @@ const Booking = () => {
                   duration: 0.4,
                 }}
               >
+
                 <h2 className="font-serif text-xl mb-8 text-foreground">
                   Choose Date & Time
                 </h2>
 
-                {/* SELECTED SERVICE REMINDER */}
-
-                {currentService && (
-                  <div className="border border-border bg-card p-5 mb-10">
-                    <p className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground mb-2">
-                      Your selected experience
-                    </p>
-
-                    <div className="flex justify-between items-center gap-4">
-                      <span className="text-sm text-foreground">
-                        {currentService.name}
-                      </span>
-
-                      <span className="text-sm font-medium text-foreground">
-                        {currentService.price}
-                      </span>
-                    </div>
-                  </div>
-                )}
+                {/* DATE */}
 
                 <h3 className="font-serif text-lg mb-4 text-foreground flex items-center gap-2">
-                  <Calendar size={16} />
+                  <Calendar
+                    size={16}
+                  />
                   Available Dates
                 </h3>
 
                 <div className="grid grid-cols-4 sm:grid-cols-7 gap-2 mb-10">
-                  {dates.map((d) => {
-                    const key =
-                      d.toISOString().split(
-                        "T"
-                      )[0];
+                  {dates.map(
+                    (date) => {
+                      const key =
+                        date
+                          .toISOString()
+                          .split(
+                            "T"
+                          )[0];
 
-                    const day =
-                      d.toLocaleDateString(
-                        "en-US",
-                        {
-                          weekday: "short",
-                        }
-                      );
+                      const day =
+                        date.toLocaleDateString(
+                          "en-US",
+                          {
+                            weekday:
+                              "short",
+                          }
+                        );
 
-                    const num =
-                      d.getDate();
+                      const number =
+                        date.getDate();
 
-                    const month =
-                      d.toLocaleDateString(
-                        "en-US",
-                        {
-                          month: "short",
-                        }
-                      );
+                      const month =
+                        date.toLocaleDateString(
+                          "en-US",
+                          {
+                            month:
+                              "short",
+                          }
+                        );
 
-                    return (
-                      <button
-                        key={key}
-                        type="button"
-                        onClick={() => {
-                          setSelectedDate(
+                      return (
+                        <button
+                          key={key}
+                          type="button"
+                          onClick={() => {
+                            setSelectedDate(
+                              key
+                            );
+
+                            setSelectedTime(
+                              ""
+                            );
+                          }}
+                          className={`p-3 border text-center transition-colors ${
+                            selectedDate ===
                             key
-                          );
-                          setSelectedTime(
-                            ""
-                          );
-                        }}
-                        className={`p-3 border text-center transition-colors ${
-                          selectedDate ===
-                          key
-                            ? "border-primary bg-secondary"
-                            : "border-border hover:border-accent"
-                        }`}
-                      >
-                        <span className="block text-[10px] uppercase text-muted-foreground">
-                          {day}
-                        </span>
+                              ? "border-primary bg-secondary"
+                              : "border-border hover:border-accent"
+                          }`}
+                        >
+                          <span className="block text-[10px] uppercase text-muted-foreground">
+                            {
+                              day
+                            }
+                          </span>
 
-                        <span className="block text-lg font-serif text-foreground">
-                          {num}
-                        </span>
+                          <span className="block text-lg font-serif text-foreground">
+                            {
+                              number
+                            }
+                          </span>
 
-                        <span className="block text-[10px] text-muted-foreground">
-                          {month}
-                        </span>
-                      </button>
-                    );
-                  })}
+                          <span className="block text-[10px] text-muted-foreground">
+                            {
+                              month
+                            }
+                          </span>
+                        </button>
+                      );
+                    }
+                  )}
                 </div>
+
+                {/* TIME */}
 
                 {selectedDate && (
                   <>
                     <h3 className="font-serif text-lg mb-4 text-foreground flex items-center gap-2">
-                      <Clock size={16} />
+                      <Clock
+                        size={16}
+                      />
                       Available Times
                     </h3>
 
                     <div className="grid grid-cols-4 gap-2 mb-10 max-h-[280px] overflow-y-auto pr-1">
                       {timeSlots.map(
-                        (t) => (
+                        (time) => (
                           <button
-                            key={t}
+                            key={time}
                             type="button"
                             onClick={() =>
                               setSelectedTime(
-                                t
+                                time
                               )
                             }
                             className={`p-2 text-sm border text-center transition-colors ${
                               selectedTime ===
-                              t
+                              time
                                 ? "border-primary bg-secondary text-foreground"
                                 : "border-border text-muted-foreground hover:border-accent"
                             }`}
                           >
-                            {t}
+                            {
+                              time
+                            }
                           </button>
                         )
                       )}
                     </div>
                   </>
                 )}
+
               </motion.div>
             )}
 
@@ -1500,6 +1519,7 @@ const Booking = () => {
                   duration: 0.4,
                 }}
               >
+
                 <h2 className="font-serif text-xl mb-2 text-foreground">
                   Select Your Therapist
                 </h2>
@@ -1509,6 +1529,7 @@ const Booking = () => {
                 </p>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+
                   {availableTherapists.map(
                     (therapist) => (
                       <div
@@ -1522,6 +1543,7 @@ const Booking = () => {
                             : "border-border hover:border-accent"
                         }`}
                       >
+
                         {/* PHOTO */}
 
                         <button
@@ -1566,7 +1588,7 @@ const Booking = () => {
                           </span>
                         </button>
 
-                        {/* DETAILS */}
+                        {/* THERAPIST INFO */}
 
                         <button
                           type="button"
@@ -1586,13 +1608,17 @@ const Booking = () => {
                           <div className="flex flex-wrap gap-2 mt-2">
                             {therapist.specialties.map(
                               (
-                                s: string
+                                specialty: string
                               ) => (
                                 <span
-                                  key={s}
+                                  key={
+                                    specialty
+                                  }
                                   className="text-[10px] tracking-[0.1em] uppercase px-2 py-1 bg-muted text-muted-foreground"
                                 >
-                                  {s}
+                                  {
+                                    specialty
+                                  }
                                 </span>
                               )
                             )}
@@ -1612,10 +1638,13 @@ const Booking = () => {
                               : "Tap to select"}
                           </span>
                         </button>
+
                       </div>
                     )
                   )}
+
                 </div>
+
               </motion.div>
             )}
 
@@ -1642,81 +1671,10 @@ const Booking = () => {
                   duration: 0.4,
                 }}
               >
+
                 <h2 className="font-serif text-xl mb-8 text-foreground">
                   Booking Summary
                 </h2>
-
-                {/* SERVICE DETAILS */}
-
-                {currentService && (
-                  <div className="border border-primary bg-secondary p-6 mb-6">
-                    <p className="text-[10px] tracking-[0.15em] uppercase text-muted-foreground mb-2">
-                      Your experience
-                    </p>
-
-                    <div className="flex justify-between gap-4">
-                      <div>
-                        <h3 className="font-serif text-xl text-foreground">
-                          {
-                            currentService.name
-                          }
-                        </h3>
-
-                        {currentService.description && (
-                          <p className="text-sm text-muted-foreground mt-2 leading-6">
-                            {
-                              currentService.description
-                            }
-                          </p>
-                        )}
-                      </div>
-
-                      <span className="text-sm font-medium text-foreground whitespace-nowrap">
-                        {
-                          currentService.price
-                        }
-                      </span>
-                    </div>
-
-                    {currentService.isPackage &&
-                      currentService.includes &&
-                      currentService.includes.length >
-                        0 && (
-                        <div className="mt-5 pt-5 border-t border-border">
-                          <p className="text-[10px] tracking-[0.15em] uppercase text-muted-foreground mb-3">
-                            Included
-                          </p>
-
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                            {currentService.includes.map(
-                              (
-                                item,
-                                index
-                              ) => (
-                                <div
-                                  key={`${item}-${index}`}
-                                  className="flex items-start gap-2"
-                                >
-                                  <Check
-                                    size={
-                                      14
-                                    }
-                                    className="mt-0.5 shrink-0 text-primary"
-                                  />
-
-                                  <span className="text-sm text-foreground">
-                                    {
-                                      item
-                                    }
-                                  </span>
-                                </div>
-                              )
-                            )}
-                          </div>
-                        </div>
-                      )}
-                  </div>
-                )}
 
                 <div className="border border-border divide-y divide-border mb-10">
 
@@ -1728,7 +1686,9 @@ const Booking = () => {
                     </span>
 
                     <span className="text-sm text-foreground text-right">
-                      {selectedCategory}
+                      {
+                        selectedCategory
+                      }
                     </span>
                   </div>
 
@@ -1756,8 +1716,8 @@ const Booking = () => {
                     <span className="text-sm text-foreground text-right">
                       {
                         locationOptions.find(
-                          (l) =>
-                            l.id ===
+                          (location) =>
+                            location.id ===
                             selectedLocation
                         )?.label
                       }
@@ -1774,8 +1734,13 @@ const Booking = () => {
                       </span>
 
                       <span className="text-sm text-foreground text-right">
-                        {addressZone} —{" "}
-                        {fullAddress}
+                        {
+                          addressZone
+                        }{" "}
+                        —{" "}
+                        {
+                          fullAddress
+                        }
                       </span>
                     </div>
                   )}
@@ -1788,8 +1753,13 @@ const Booking = () => {
                     </span>
 
                     <span className="text-sm text-foreground text-right">
-                      {selectedDate} at{" "}
-                      {selectedTime}
+                      {
+                        selectedDate
+                      }{" "}
+                      at{" "}
+                      {
+                        selectedTime
+                      }
                     </span>
                   </div>
 
@@ -1829,12 +1799,17 @@ const Booking = () => {
 
                   <div className="p-6 flex justify-between gap-6">
                     <span className="text-sm text-muted-foreground">
-                      Total
+                      Price
                     </span>
 
                     <span className="text-sm font-medium text-foreground">
-                      ₦
-                      {bookingTotal.toLocaleString()}
+                      {
+                        currentService?.price
+                      }
+
+                      {addHotStone
+                        ? ` + ${hotStonePrice}`
+                        : ""}
                     </span>
                   </div>
 
@@ -1850,6 +1825,7 @@ const Booking = () => {
                       {bookingDeposit.toLocaleString()}
                     </span>
                   </div>
+
                 </div>
 
                 {/* POLICIES */}
@@ -1901,17 +1877,6 @@ const Booking = () => {
                         ? `\nArea: ${addressZone}\nAddress: ${fullAddress.trim()}`
                         : "";
 
-                    const includesLine =
-                      currentService?.includes &&
-                      currentService.includes.length
-                        ? `\n\nWhat's included:\n${currentService.includes
-                            .map(
-                              (item) =>
-                                `• ${item}`
-                            )
-                            .join("\n")}`
-                        : "";
-
                     const msg =
                       `Hello, I'd like to confirm my booking:\n\n` +
                       `Category: ${selectedCategory}\n` +
@@ -1926,16 +1891,15 @@ const Booking = () => {
                       `Deposit (30%): ${depositFmt}\n` +
                       `Location: ${
                         locationOptions.find(
-                          (l) =>
-                            l.id ===
+                          (location) =>
+                            location.id ===
                             selectedLocation
                         )?.label
                       }` +
                       `${addressLine}\n` +
                       `Date: ${selectedDate}\n` +
                       `Time: ${selectedTime}` +
-                      `${therapistLine}` +
-                      `${includesLine}\n\n` +
+                      `${therapistLine}\n\n` +
                       `I'm ready to pay the ${depositFmt} deposit.`;
 
                     window.open(
@@ -1949,6 +1913,7 @@ const Booking = () => {
                 >
                   Confirm & Pay Deposit via WhatsApp
                 </button>
+
               </motion.div>
             )}
 
@@ -1963,10 +1928,14 @@ const Booking = () => {
             {step > 1 ? (
               <button
                 type="button"
-                onClick={goBack}
+                onClick={
+                  goBack
+                }
                 className="inline-flex items-center gap-2 text-xs tracking-[0.15em] uppercase text-muted-foreground hover:text-foreground transition-colors"
               >
-                <ArrowLeft size={14} />
+                <ArrowLeft
+                  size={14}
+                />
                 Back
               </button>
             ) : (
@@ -1976,8 +1945,12 @@ const Booking = () => {
             {step < 4 && (
               <button
                 type="button"
-                onClick={goNext}
-                disabled={!canProceed()}
+                onClick={
+                  goNext
+                }
+                disabled={
+                  !canProceed()
+                }
                 className={`inline-flex items-center gap-2 px-8 py-3 text-xs tracking-[0.2em] uppercase transition-colors duration-300 ${
                   canProceed()
                     ? "bg-primary text-primary-foreground hover:bg-warm-taupe"
@@ -1985,10 +1958,14 @@ const Booking = () => {
                 }`}
               >
                 Continue
-                <ArrowRight size={14} />
+                <ArrowRight
+                  size={14}
+                />
               </button>
             )}
+
           </div>
+
         </div>
       </section>
 
@@ -2000,13 +1977,17 @@ const Booking = () => {
         open={
           !!galleryTherapistId
         }
-        onOpenChange={(o) => {
-          if (!o) {
+        onOpenChange={(
+          open
+        ) => {
+          if (!open) {
             setGalleryTherapistId(
               null
             );
 
-            setGalleryIndex(0);
+            setGalleryIndex(
+              0
+            );
           }
         }}
       >
@@ -2018,6 +1999,7 @@ const Booking = () => {
               {/* IMAGE */}
 
               <div className="bg-muted relative">
+
                 {galleryPhotos.length >
                 0 ? (
                   <img
@@ -2053,8 +2035,10 @@ const Booking = () => {
                       type="button"
                       onClick={() =>
                         setGalleryIndex(
-                          (i) =>
-                            (i -
+                          (
+                            index
+                          ) =>
+                            (index -
                               1 +
                               galleryPhotos.length) %
                             galleryPhotos.length
@@ -2072,8 +2056,11 @@ const Booking = () => {
                       type="button"
                       onClick={() =>
                         setGalleryIndex(
-                          (i) =>
-                            (i + 1) %
+                          (
+                            index
+                          ) =>
+                            (index +
+                              1) %
                             galleryPhotos.length
                         )
                       }
@@ -2098,6 +2085,7 @@ const Booking = () => {
                     </span>
                   </>
                 )}
+
               </div>
 
               {/* THUMBNAILS */}
@@ -2107,28 +2095,31 @@ const Booking = () => {
                 <div className="flex gap-2 px-6 pt-4 overflow-x-auto">
                   {galleryPhotos.map(
                     (
-                      src,
-                      i
+                      photo,
+                      index
                     ) => (
                       <button
                         key={
-                          src + i
+                          photo +
+                          index
                         }
                         type="button"
                         onClick={() =>
                           setGalleryIndex(
-                            i
+                            index
                           )
                         }
                         className={`w-16 h-16 flex-shrink-0 overflow-hidden border ${
-                          i ===
+                          index ===
                           galleryIndex
                             ? "border-primary"
                             : "border-border opacity-60 hover:opacity-100"
                         }`}
                       >
                         <img
-                          src={src}
+                          src={
+                            photo
+                          }
                           alt=""
                           className="w-full h-full object-cover"
                         />
@@ -2141,6 +2132,7 @@ const Booking = () => {
               {/* THERAPIST INFO */}
 
               <div className="p-6 flex items-center justify-between gap-4">
+
                 <div>
                   <h3 className="font-serif text-2xl text-foreground">
                     {
@@ -2151,13 +2143,17 @@ const Booking = () => {
                   <div className="flex flex-wrap gap-2 mt-2">
                     {galleryTherapist.specialties.map(
                       (
-                        s: string
+                        specialty: string
                       ) => (
                         <span
-                          key={s}
+                          key={
+                            specialty
+                          }
                           className="text-[10px] tracking-[0.1em] uppercase px-2 py-1 bg-muted text-muted-foreground"
                         >
-                          {s}
+                          {
+                            specialty
+                          }
                         </span>
                       )
                     )}
@@ -2183,11 +2179,15 @@ const Booking = () => {
                 >
                   Select Therapist
                 </button>
+
               </div>
+
             </div>
           )}
+
         </DialogContent>
       </Dialog>
+
     </Layout>
   );
 };
