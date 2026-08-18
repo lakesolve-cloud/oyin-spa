@@ -55,8 +55,7 @@ export type Database = {
           created_at: string
           id: string
           name: string
-          photo_url: string | null
-          photo_urls: string[]
+          photo_url: string 
           service_mode: Database["public"]["Enums"]["service_mode"]
           specialties: string[]
           updated_at: string
@@ -67,8 +66,7 @@ export type Database = {
           created_at?: string
           id?: string
           name: string
-          photo_url?: string | null
-          photo_urls?: string[]
+          photo_url?: string
           service_mode?: Database["public"]["Enums"]["service_mode"]
           specialties?: string[]
           updated_at?: string
@@ -79,8 +77,7 @@ export type Database = {
           created_at?: string
           id?: string
           name?: string
-          photo_url?: string | null
-          photo_urls?: string[]
+          photo_url?: string
           service_mode?: Database["public"]["Enums"]["service_mode"]
           specialties?: string[]
           updated_at?: string
