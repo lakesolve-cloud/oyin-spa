@@ -178,9 +178,14 @@ const Booking = () => {
   const availableTherapists = therapists.filter((t) => {
     if (!t.available) return false;
     const mode = t.service_mode ?? "both";
-    if (mode === "both") return true;
-    if (selectedLocation === "mobile") return mode === "mobile";
-    if (selectedLocation === "in-spa") return mode === "walk_in";
+    if (mode !== "both") {
+      if (selectedLocation === "mobile" && mode !== "mobile") return false;
+      if (selectedLocation === "in-spa" && mode !== "walk_in") return false;
+    }
+    if (selectedLocation === "mobile" && addressZone) {
+      const zone = t.zone ?? "both";
+      if (zone !== "both" && zone !== addressZone.toLowerCase()) return false;
+    }
     return true;
   });
   const selectedTherapistData = therapists.find((t) => t.id === selectedTherapist);
