@@ -14,6 +14,8 @@ import {
   mobileMassageServices,
   mobileQuickMassages,
   mobileMassageAddOns,
+  celebrationPackages,
+  comboPackages,
 } from "@/data/services";
 import therapistAmara from "@/assets/therapist-amara.jpg";
 import therapistChidera from "@/assets/therapist-chidera.jpg";
@@ -69,6 +71,26 @@ function buildBookableList(
     });
   });
 
+  celebrationPackages.forEach((group) => {
+    group.packages.forEach((pkg) => {
+      list.push({
+        id: `package--${pkg.name}`.toLowerCase().replace(/\s+/g, "-"),
+        category: "Celebration Packages",
+        name: `${pkg.name} (${group.group})`,
+        price: pkg.price,
+      });
+    });
+  });
+
+  comboPackages.forEach((pkg) => {
+    list.push({
+      id: `combo--${pkg.name}`.toLowerCase().replace(/\s+/g, "-"),
+      category: "Spa Combo Packages",
+      name: pkg.name,
+      price: pkg.price,
+    });
+  });
+
   return list;
 }
 
@@ -86,7 +108,12 @@ const timeSlots = Array.from({ length: 48 }, (_, i) => {
   return `${h}:${m}`;
 });
 
-const THERAPIST_CATEGORIES = new Set(["Massage", "Body Waxing"]);
+const THERAPIST_CATEGORIES = new Set([
+  "Massage",
+  "Body Waxing",
+  "Celebration Packages",
+  "Spa Combo Packages",
+]);
 
 const fallbackTherapists = [
   { id: "1", name: "Amara", specialties: ["Deep Tissue", "Sports Recovery"], available: true, photo_url: null, photo: therapistAmara, photo_urls: [] as string[], service_mode: "both" as const },
@@ -119,6 +146,17 @@ const Booking = () => {
       }
     };
     fetchTherapists();
+  }, []);
+
+  // Preselect a package when arriving from the Packages page
+  useEffect(() => {
+    const id = new URLSearchParams(window.location.search).get("service");
+    if (!id) return;
+    const match = inSpaBookable.find((s) => s.id === id);
+    if (!match) return;
+    setSelectedLocation("in-spa");
+    setSelectedCategory(match.category);
+    setSelectedServiceId(match.id);
   }, []);
 
   const activeBookable = useMemo(
