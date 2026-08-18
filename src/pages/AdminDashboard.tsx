@@ -18,7 +18,6 @@ interface Therapist {
   name: string;
   specialties: string[];
   photo_url: string | null;
-  photo_urls: string[];
   available: boolean;
   service_mode: ServiceMode;
   zone: ServiceZone;
@@ -125,11 +124,13 @@ const AdminDashboard = () => {
 
     const photoUrls = formPhotos.length ? await uploadPhotos(formPhotos) : [];
 
-    const { error } = await supabase.from("therapists").insert({
+       const { error } = await supabase.from("therapists").insert({
       name: formName,
-      specialties: formSpecialties.split(",").map((s) => s.trim()).filter(Boolean),
-      photo_url: photoUrls[0] ?? null,
-      photo_urls: photoUrls,
+      specialties: formSpecialties
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean),
+      photo_url: photoUrls,
       service_mode: formServiceMode,
       zone: formZone,
     });
@@ -154,15 +155,12 @@ const AdminDashboard = () => {
     if (newUrls.length === 0) return;
 
     const therapist = therapists.find((t) => t.id === therapistId);
-    const existing = therapist?.photo_urls ?? [];
+    const existing = therapist?.photo_url ?? [];
     const merged = [...existing, ...newUrls];
 
-    const { error } = await supabase
+     const { error } = await supabase
       .from("therapists")
-      .update({
-        photo_urls: merged,
-        photo_url: therapist?.photo_url ?? merged[0],
-      })
+      .update({ photo_url: merged })
       .eq("id", therapistId);
 
     if (error) toast.error(error.message);
@@ -359,18 +357,27 @@ const AdminDashboard = () => {
               </form>
             )}
 
-            <div className="space-y-4">
+              <div className="space-y-4">
               {therapists.map((t) => (
-                <div key={t.id} className="border border-border p-5 flex items-center gap-5">
+                <div
+                  key={t.id}
+                  className="border border-border p-5 flex items-center gap-5"
+                >
                   <div className="w-20 h-20 flex-shrink-0 overflow-hidden bg-muted relative">
-                    {t.photo_url ? (
-                      <img src={t.photo_url} alt={t.name} className="w-full h-full object-cover" />
+                    {t.photo_url && t.photo_url.length > 0 ? (
+                      <img
+                        src={t.photo_url[0]}
+                        alt={t.name}
+                        className="w-full h-full object-cover"
+                      />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center text-muted-foreground text-xs">No photo</div>
+                      <div className="w-full h-full flex items-center justify-center text-muted-foreground text-xs">
+                        No photo
+                      </div>
                     )}
-                    {t.photo_urls && t.photo_urls.length > 1 && (
+                    {t.photo_url && t.photo_url.length > 1 && (
                       <span className="absolute bottom-0 right-0 text-[10px] bg-primary text-primary-foreground px-1.5">
-                        +{t.photo_urls.length - 1}
+                        +{t.photo_url.length - 1}
                       </span>
                     )}
                   </div>
