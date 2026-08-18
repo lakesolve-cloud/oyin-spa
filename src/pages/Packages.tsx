@@ -6,7 +6,10 @@ import { fadeUp } from "@/lib/animations";
 import heroImage from "@/assets/hero-spa.jpg";
 import { celebrationPackages, comboPackages, SpaPackage } from "@/data/services";
 
-const PackageCard = ({ pkg, index }: { pkg: SpaPackage; index: number }) => (
+const bookingId = (pkg: SpaPackage, prefix: string) =>
+  `${prefix}--${pkg.name}`.toLowerCase().replace(/\s+/g, "-");
+
+const PackageCard = ({ pkg, index, prefix }: { pkg: SpaPackage; index: number; prefix: string }) => (
   <motion.div
     custom={index}
     initial="hidden"
@@ -29,7 +32,7 @@ const PackageCard = ({ pkg, index }: { pkg: SpaPackage; index: number }) => (
     </ul>
     <div className="px-7 pb-7">
       <Link
-        to="/booking"
+        to={`/booking?service=${bookingId(pkg, prefix)}`}
         className="inline-flex items-center gap-3 px-8 py-3 text-xs tracking-[0.2em] uppercase bg-primary text-primary-foreground hover:bg-primary/90 transition-colors duration-300"
       >
         Book This Package <ArrowRight size={14} />
@@ -86,7 +89,7 @@ const Packages = () => {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
                   {group.packages.map((pkg, i) => (
-                    <PackageCard key={pkg.name} pkg={pkg} index={i} />
+                    <PackageCard key={pkg.name} pkg={pkg} index={i} prefix="package" />
                   ))}
                 </div>
               </div>
@@ -111,7 +114,7 @@ const Packages = () => {
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
             {comboPackages.map((pkg, i) => (
-              <PackageCard key={pkg.name} pkg={pkg} index={i} />
+              <PackageCard key={pkg.name} pkg={pkg} index={i} prefix="combo" />
             ))}
           </div>
         </div>
