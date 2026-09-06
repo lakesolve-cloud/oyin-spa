@@ -1903,7 +1903,7 @@ const Booking = () => {
                       `I'm ready to pay the ${depositFmt} deposit.`;
 
                     window.open(
-                      "https://wa.me/2347033948417?text=" +
+                      "https://wa.me/2348024642892?text=" +
                         encodeURIComponent(
                           msg
                         ),
